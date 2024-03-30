@@ -1,0 +1,120 @@
+databaseChangeLog:
+  - changeSet:
+      id: 14.02.2024-create-accounts-table
+      author: RedArtis
+      changes:
+        - createTable:
+            tableName: accounts
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: chat_id
+                  type: bigint
+                  constraints:
+                    unique: true
+  - changeSet:
+      id: 14.02.2024-create-users-table
+      author: RedArtis
+      changes:
+        - createTable:
+            tableName: users
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: auth_date
+                  type: varchar(255)
+              - column:
+                  name: username
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+              - column:
+                  name: first_name
+                  type: varchar(255)
+              - column:
+                  name: last_name
+                  type: varchar(255)
+              - column:
+                  name: photo_url
+                  type: varchar(255)
+              - column:
+                  name: account_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_users_account_id_accounts
+                    references: accounts(id)
+
+  - changeSet:
+      id: 14.02.2024-create-categories-table
+      author: RedArtis
+      changes:
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: type
+                  type: varchar(64)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: account_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_categories_account_id_accounts
+                    references: accounts(id)
+                    nullable: false
+
+        - addUniqueConstraint:
+            tableName: categories
+            columnNames: name, account_id
+            constraintName: uq_categories_name_and_account_id
+
+  - changeSet:
+      id: 14.02.2024-create-keywords-table
+      author: RedArtis
+      changes:
+        - createTable:
+            tableName: keywords
+            columns:
+              - column:
+                  name: account_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: category_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_keywords_category_id_categories
+                    references: categories(id)
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+        - addPrimaryKey:
+            tableName: keywords
+            columnNames: account_id, name
+            constraintName: pk_composite_keywords

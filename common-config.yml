@@ -1,0 +1,34 @@
+services:
+  network-deploy-service:
+    env_file: ./.env
+    networks:
+      - expense-network
+
+  microservice-base-config:
+    extends:
+      service: network-deploy-service
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+
+  microservice-config-server-config:
+    extends:
+      service: microservice-base-config
+    depends_on:
+      config-server:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_APPLICATION_PROFILE}
+      #SPRING_CONFIG_IMPORT: configserver:http://config-server:8888/
+      CONFIG_SERVER_HOST: config-server
+      CONFIG_SERVER_PORT: 8888
+
+  microservice-eureka-config:
+    extends:
+      service: microservice-config-server-config
+    depends_on:
+      eureka-service:
+        condition: service_healthy
+    environment:
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-service:${EUREKA_SERVICE_DOCKER_PORT}/eureka/

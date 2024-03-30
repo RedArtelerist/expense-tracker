@@ -1,0 +1,48 @@
+databaseChangeLog:
+  - changeSet:
+      id: 24.02.2024-create-transactions-table
+      author: RedArtis
+      changes:
+        - createTable:
+            tableName: transactions
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: category_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_transactions_category_id_categories
+                    references: categories(id)
+                    nullable: true
+              - column:
+                  name: message
+                  type: varchar(255)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: amount
+                  type: decimal
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: timestamp
+                  constraints:
+                    nullable: false
+              - column:
+                  name: suggested_category_id
+                  type: bigint
+              - column:
+                  name: account_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_transactions_account_id_accounts
+                    references: accounts(id)
+                    nullable: true
+              - column:
+                  name: telegram_user_id
+                  type: bigint

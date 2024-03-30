@@ -1,0 +1,96 @@
+version: '3.8'
+
+services:
+  config-server:
+    image: config-server:v0.0.1
+    container_name: config-server
+    build:
+      context: .
+      dockerfile: config-server/Dockerfile
+    restart: unless-stopped
+    healthcheck:
+      test: "curl --fail --silent localhost:${CONFIG_SERVER_DOCKER_PORT}/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    ports:
+      - "${CONFIG_SERVER_LOCAL_PORT}:${CONFIG_SERVER_DOCKER_PORT}"
+    environment:
+      CONFIG_SERVER_GIT_REPOSITORY_URI: ${CONFIG_SERVER_GIT_REPOSITORY_URI}
+    extends:
+      file: common-config.yml
+      service: microservice-base-config
+
+  eureka-service:
+    image: eureka-service:v0.0.1
+    container_name: eureka-service
+    build:
+      context: .
+      dockerfile: discovery-service/Dockerfile
+    restart: unless-stopped
+    healthcheck:
+      test: "curl --fail --silent localhost:8761/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    ports:
+      - "${EUREKA_SERVICE_LOCAL_PORT}:${EUREKA_SERVICE_DOCKER_PORT}"
+    extends:
+      file: common-config.yml
+      service: microservice-config-server-config
+    environment:
+      SPRING_APPLICATION_NAME: "eureka-service"
+
+  expense-tracker-db:
+    container_name: expense-tracker-db
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - "${POSTGRES_LOCAL_PORT}:${POSTGRES_DOCKER_PORT}"
+    environment:
+      POSTGRES_DB: ${EXPENSE_DB}
+      POSTGRES_USER: ${EXPENSE_DB_USER}
+      POSTGRES_PASSWORD: ${EXPENSE_DB_PASSWORD}
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+  expense-service:
+    image: expense-service:v0.0.1
+    container_name: expense-service
+    build:
+      context: .
+      dockerfile: expense-service/Dockerfile
+    ports:
+      - "8100:8100"
+    restart: on-failure
+    depends_on:
+      expense-tracker-db:
+        condition: service_started
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+    environment:
+      SPRING_APPLICATION_NAME: "expense-service"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://expense-tracker-db:${POSTGRES_DOCKER_PORT}/${EXPENSE_DB}
+
+  telegram-bot-service:
+    image: telegram-bot-service:v0.0.1
+    container_name: telegram-bot-service
+    build:
+      context: .
+      dockerfile: telegram-bot-service/Dockerfile
+    restart: on-failure
+    ports:
+      - "8200:8200"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+    environment:
+      SPRING_APPLICATION_NAME: "telegram-bot-service"
+
+networks:
+  expense-network:
+    driver: "bridge"
