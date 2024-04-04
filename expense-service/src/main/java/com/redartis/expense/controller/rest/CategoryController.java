@@ -1,8 +1,11 @@
 package com.redartis.expense.controller.rest;
 
 import com.redartis.dto.category.CategoryDto;
+import com.redartis.dto.category.MergeCategoryDto;
 import com.redartis.dto.constants.Type;
+import com.redartis.expense.model.KeywordId;
 import com.redartis.expense.service.CategoryService;
+import com.redartis.expense.service.KeywordService;
 import com.redartis.expense.util.TelegramUtils;
 import java.security.Principal;
 import java.util.List;
@@ -24,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class CategoryController {
     private final TelegramUtils telegramUtils;
     private final CategoryService categoryService;
+    private final KeywordService keywordService;
 
     @GetMapping
     public List<CategoryDto> getCategories(Principal principal) {
@@ -47,7 +51,7 @@ public class CategoryController {
         categoryService.setDefaultCategories(telegramUtils.getTelegramId(principal));
     }
 
-    @PostMapping("/")
+    @PostMapping
     public ResponseEntity<HttpStatus> createCategory(
             Principal principal,
             @RequestBody CategoryDto category) {
@@ -55,7 +59,7 @@ public class CategoryController {
         return ResponseEntity.ok(HttpStatus.CREATED);
     }
 
-    @PutMapping("/")
+    @PutMapping
     public ResponseEntity<HttpStatus> updateCategory(
             Principal principal,
             @RequestBody CategoryDto category) {
@@ -69,5 +73,17 @@ public class CategoryController {
             @PathVariable Long id) {
         categoryService.deleteCategory(id);
         return ResponseEntity.ok(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/merge")
+    public ResponseEntity<HttpStatus> mergeCategory(@RequestBody MergeCategoryDto categoryDto) {
+        categoryService.mergeCategory(categoryDto);
+        return ResponseEntity.ok(HttpStatus.ACCEPTED);
+    }
+
+    @DeleteMapping("/keywords")
+    public ResponseEntity<HttpStatus> deleteKeyword(@RequestBody KeywordId keywordId) {
+        keywordService.deleteKeyword(keywordId);
+        return ResponseEntity.ok(HttpStatus.ACCEPTED);
     }
 }

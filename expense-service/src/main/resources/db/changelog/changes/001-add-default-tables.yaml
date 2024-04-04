@@ -108,7 +108,6 @@ databaseChangeLog:
                   constraints:
                     foreignKeyName: fk_keywords_category_id_categories
                     references: categories(id)
-                    nullable: false
               - column:
                   name: name
                   type: varchar(255)

@@ -307,7 +307,7 @@ function handleDrop(e) {
         transactionId: transactionId,
         categoryId: categoryId
     }
-    let url = './transaction/define'
+    let url = './transactions/define'
     $.ajax({
         url: url,
         type: 'POST',
@@ -341,10 +341,10 @@ function drawToast(e, categoryName, transactionDefined, transactionComment) {
     let transactionCommentForButtonName = transactionCommentNoQuote.replaceAll("\"", "_");
     toastr["success"](
         '<div><text font-size="30">' +
-        e.dataTransfer.getData("comment") + ' ' + e.dataTransfer.getData("amount") + ' добавлено в категорию ' + categoryName +
+        e.dataTransfer.getData("comment") + ' ' + e.dataTransfer.getData("amount") + ' added to category ' + categoryName +
         '</text>' +
         '<div class="buttonUndefine" id="undefineButtonFor_' + transactionCommentForButtonName + '">' +
-        '<a>Отменить</a>' +
+        '<a>Cancel</a>' +
         '</div></div>'
     )
 
@@ -424,7 +424,7 @@ function drawErrorToast(message) {
 }
 
 function undefineTransaction(transactionDefined) {
-    let url = './transaction/undefine'
+    let url = './transactions/undefine'
     $.ajax({
         url: url,
         type: 'POST',
@@ -704,7 +704,7 @@ function createNewCategory(category) {
     let checkError = false;
     $.ajax({
         type: 'POST',
-        url: './categories/',
+        url: './categories',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -725,7 +725,7 @@ function createNewCategory(category) {
 function updateCategory(category) {
     $.ajax({
         type: 'PUT',
-        url: './categories/',
+        url: './categories',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -744,7 +744,7 @@ function updateCategory(category) {
 function mergeCategory(mergeCategoryDTO) {
     $.ajax({
         type: 'POST',
-        url: './categories/merge/',
+        url: './categories/merge',
         headers: {
             'Content-Type': 'application/json',
         },
@@ -906,7 +906,7 @@ sendTransactionButton.on("click", function () {
     };
 
     $.ajax({
-        url: "/transaction",
+        url: "/transactions",
         type: "POST",
         contentType: "application/json",
         data: JSON.stringify(data),

@@ -18,7 +18,6 @@ import jakarta.persistence.UniqueConstraint;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -34,7 +33,6 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -51,7 +49,6 @@ public class Category {
     @JoinColumn(name = "account_id", nullable = false)
     private Account account;
 
-    @EqualsAndHashCode.Exclude
     @OneToMany(mappedBy = "category", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private Set<Keyword> keywords;
 

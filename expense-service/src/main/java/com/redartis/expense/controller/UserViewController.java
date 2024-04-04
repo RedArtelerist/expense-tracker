@@ -14,4 +14,9 @@ public class UserViewController {
     public String getMainPage() {
         return "main";
     }
+
+    @GetMapping("/history")
+    public String getTransactionPage() {
+        return "history";
+    }
 }

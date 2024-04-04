@@ -1,0 +1,15 @@
+server:
+  port: 8300
+
+spring:
+  application:
+    name: recognizer-service
+  profiles:
+    active: ${SPRING_APPLICATION_PROFILE:dev}
+  config:
+    import: optional:configserver:http://${CONFIG_SERVER_HOST:localhost}:${CONFIG_SERVER_PORT:8888}
+  cloud:
+    openfeign:
+      httpclient:
+        hc5:
+          enabled: true

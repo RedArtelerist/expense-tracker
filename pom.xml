@@ -15,6 +15,7 @@
         <module>config-server</module>
         <module>discovery-service</module>
         <module>expense-service</module>
+        <module>recognizer-service</module>
         <module>telegram-bot-service</module>
         <module>dto</module>
     </modules>

@@ -91,6 +91,21 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "telegram-bot-service"
 
+  recognizer-service:
+    image: recognizer-service:v0.0.1
+    container_name: recognizer-service
+    build:
+      context: .
+      dockerfile: recognizer-service/Dockerfile
+    restart: on-failure
+    ports:
+      - "8300:8300"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+    environment:
+      SPRING_APPLICATION_NAME: "recognizer-service"
+
 networks:
   expense-network:
     driver: "bridge"

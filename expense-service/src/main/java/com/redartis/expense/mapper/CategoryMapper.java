@@ -4,6 +4,7 @@ import com.redartis.dto.category.CategoryDto;
 import com.redartis.dto.category.KeywordIdDto;
 import com.redartis.expense.model.Account;
 import com.redartis.expense.model.Category;
+import java.util.Comparator;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -33,8 +34,10 @@ public class CategoryMapper {
         return category.getKeywords()
                 .stream()
                 .map(keyword -> new KeywordIdDto(
-                        keyword.getCategory().getId(), keyword.getKeywordId().getName())
+                        keyword.getKeywordId().getAccountId(),
+                        keyword.getKeywordId().getName())
                 )
+                .sorted(Comparator.comparing(KeywordIdDto::name))
                 .toList();
     }
 }

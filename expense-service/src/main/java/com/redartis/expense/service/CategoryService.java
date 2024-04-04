@@ -1,6 +1,7 @@
 package com.redartis.expense.service;
 
 import com.redartis.dto.category.CategoryDto;
+import com.redartis.dto.category.MergeCategoryDto;
 import com.redartis.dto.constants.Type;
 import com.redartis.expense.config.properties.DefaultCategoryProperties;
 import com.redartis.expense.exception.CategoryNameIsNotUniqueException;
@@ -9,21 +10,26 @@ import com.redartis.expense.mapper.CategoryMapper;
 import com.redartis.expense.model.Account;
 import com.redartis.expense.model.Category;
 import com.redartis.expense.repository.CategoryRepository;
+import com.redartis.expense.repository.KeywordRepository;
+import com.redartis.expense.repository.TransactionRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class CategoryService {
-    private final CategoryRepository categoryRepository;
-    private final AccountService accountService;
-    private final CategoryMapper categoryMapper;
     private final DefaultCategoryProperties defaultCategoryProperties;
+    private final CategoryRepository categoryRepository;
+    private final CategoryMapper categoryMapper;
+    private final AccountService accountService;
+    private final KeywordRepository keywordRepository;
+    private final TransactionRepository transactionRepository;
 
     public List<CategoryDto> findCategoriesByUserId(Long userId) {
-        return accountService.getAccountByUserId(userId)
+        return accountService.getAccountByUserIdWithCategories(userId)
                 .getCategories()
                 .stream()
                 .map(categoryMapper::mapToDto)
@@ -55,12 +61,18 @@ public class CategoryService {
         );
     }
 
+    public Category getCategoryByIdWithAccount(Long categoryId) {
+        return categoryRepository.findByIdWithAccount(categoryId).orElseThrow(
+                () -> new CategoryNotFoundException("Can't find category by id: " + categoryId)
+        );
+    }
+
     public CategoryDto findCategoryById(Long categoryId) {
         return categoryMapper.mapToDto(getCategoryById(categoryId));
     }
 
-    public void setDefaultCategories(Long accountId) {
-        Account account = accountService.getAccountByUserId(accountId);
+    public void setDefaultCategories(Long userId) {
+        Account account = accountService.getAccountByUserId(userId);
         defaultCategoryProperties.getCategories()
                 .forEach(category -> categoryRepository.save(new Category(
                         category.getName(),
@@ -69,9 +81,9 @@ public class CategoryService {
                 )));
     }
 
-    public void createCategory(Long accountId, CategoryDto categoryDto) {
+    public void createCategory(Long userId, CategoryDto categoryDto) {
         try {
-            Account account = accountService.getAccountByUserId(accountId);
+            Account account = accountService.getAccountByUserIdWithCategories(userId);
             Category category = categoryMapper.mapToCategory(categoryDto, account);
             categoryRepository.save(category);
         } catch (DataIntegrityViolationException e) {
@@ -81,8 +93,8 @@ public class CategoryService {
         }
     }
 
-    public void updateCategory(Long accountId, CategoryDto categoryDto) {
-        Account account = accountService.getAccountByUserId(accountId);
+    public void updateCategory(Long userId, CategoryDto categoryDto) {
+        Account account = accountService.getAccountByUserIdWithCategories(userId);
         Category updatedCategory = categoryMapper.mapToCategory(categoryDto, account);
         updatedCategory.setId(categoryDto.id());
         categoryRepository.save(updatedCategory);
@@ -90,5 +102,14 @@ public class CategoryService {
 
     public void deleteCategory(Long id) {
         categoryRepository.deleteById(id);
+    }
+
+    @Transactional
+    public void mergeCategory(MergeCategoryDto mergeCategoryDto) {
+        Long categoryToMergeId = mergeCategoryDto.categoryToMergeId();
+        Long categoryToChangeId = mergeCategoryDto.categoryToChangeId();
+        keywordRepository.updateCategoryId(categoryToMergeId, categoryToChangeId);
+        transactionRepository.updateCategoryId(categoryToMergeId, categoryToChangeId);
+        categoryRepository.deleteById(categoryToMergeId);
     }
 }

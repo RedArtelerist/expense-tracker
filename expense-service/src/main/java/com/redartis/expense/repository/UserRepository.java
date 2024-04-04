@@ -11,6 +11,9 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+    @Query("SELECT u FROM User u LEFT JOIN FETCH u.account")
+    Optional<User> findById(Long id);
+
     @Query("""
             SELECT u FROM User u
             LEFT JOIN FETCH u.account a
