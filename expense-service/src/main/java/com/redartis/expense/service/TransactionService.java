@@ -99,7 +99,7 @@ public class TransactionService {
         transaction.setMessage(transactionDto.getMessage());
 
         if (transaction.getCategory() != null
-            && !transaction.getCategory().getName().equals(transactionDto.getCategoryName())) {
+                && !transaction.getCategory().getName().equals(transactionDto.getCategoryName())) {
             keyword.ifPresent(keywordRepository::delete);
         } else if (!transactionDto.getCategoryName().equals("Unrecognized")
                    && transactionDto.getMessage() != null) {
