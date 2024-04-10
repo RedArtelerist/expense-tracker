@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface KeywordRepository extends JpaRepository<Keyword, KeywordId> {
@@ -27,4 +28,7 @@ public interface KeywordRepository extends JpaRepository<Keyword, KeywordId> {
     void removeCategoryId(KeywordId keywordId);
 
     void deleteByKeywordId(KeywordId keywordId);
+
+    @Transactional
+    void deleteAllByKeywordId_AccountId(Long accountId);
 }

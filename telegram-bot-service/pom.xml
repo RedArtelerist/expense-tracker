@@ -11,13 +11,14 @@
 	<groupId>com.redartis</groupId>
 	<artifactId>telegram-bot-service</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>telegram_bot_service</name>
-	<description>telegram_bot_service</description>
+	<name>telegram-bot-service</name>
+	<description>telegram-bot-service</description>
 
 	<properties>
 		<java.version>21</java.version>
 		<spring-cloud.version>2023.0.0</spring-cloud.version>
 		<maven.checkstyle.plugin.configLocation>checkstyle.xml</maven.checkstyle.plugin.configLocation>
+		<telegram-bot.version>7.2.0</telegram-bot.version>
 	</properties>
 
 	<dependencyManagement>
@@ -47,10 +48,20 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-actuator</artifactId>
 		</dependency>
+
+		<!-- Persistence  -->
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<scope>runtime</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-devtools</artifactId>
-			<scope>runtime</scope>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.liquibase</groupId>
+			<artifactId>liquibase-core</artifactId>
 		</dependency>
 
 		<!-- Spring Cloud -->
@@ -77,6 +88,17 @@
 			<groupId>com.redartis</groupId>
 			<artifactId>dto</artifactId>
 			<version>0.0.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.telegram</groupId>
+			<artifactId>telegrambots-springboot-longpolling-starter</artifactId>
+			<version>${telegram-bot.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.telegram</groupId>
+			<artifactId>telegrambots-client</artifactId>
+			<version>${telegram-bot.version}</version>
 		</dependency>
 	</dependencies>
 

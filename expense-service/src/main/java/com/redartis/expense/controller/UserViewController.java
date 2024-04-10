@@ -19,4 +19,19 @@ public class UserViewController {
     public String getTransactionPage() {
         return "history";
     }
+
+    @GetMapping("/analytics")
+    public String getAnalytics() {
+        return "analytics";
+    }
+
+    @GetMapping("/micromanagement")
+    public String getMicromanagement() {
+        return "micromanagement";
+    }
+
+    @GetMapping("/settings")
+    public String getSettings() {
+        return "settings";
+    }
 }

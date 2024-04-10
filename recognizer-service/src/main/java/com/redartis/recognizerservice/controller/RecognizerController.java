@@ -1,6 +1,5 @@
 package com.redartis.recognizerservice.controller;
 
-
 import com.redartis.dto.category.CategoryDto;
 import com.redartis.recognizerservice.service.CategoryRecognizerService;
 import java.util.List;
@@ -24,7 +23,6 @@ public class RecognizerController {
         log.info("GET request on /recognizer, test");
         return "Recognizer";
     }
-
 
     @PostMapping("/recognizer/category/suggest")
     public void recognizeCategory(@RequestParam(name = "message") String message,

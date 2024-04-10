@@ -1,5 +1,6 @@
 package com.redartis.expense.repository;
 
+import com.redartis.dto.analytics.AnalyticsDataDto;
 import com.redartis.dto.constants.Type;
 import com.redartis.expense.model.Category;
 import java.util.List;
@@ -9,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
@@ -29,4 +31,24 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
     @Query("SELECT c FROM Category c WHERE c.account.id = :accountId AND c.name = :name")
     Category findCategoryByNameAndAccountId(Long accountId, String name);
+
+    @Transactional
+    void deleteAllByAccountId(Long accountId);
+
+    @Query("""
+            SELECT new com.redartis.dto.analytics.AnalyticsDataDto(
+                c.id,
+                c.name,
+                (SUM(t.amount)) / (
+                    EXTRACT(MONTH FROM MAX(t.date)) - EXTRACT(MONTH FROM MIN(t.date)) +
+                    ((EXTRACT(YEAR FROM MAX(t.date)) - EXTRACT(YEAR FROM MIN(t.date))) * 12) + 1
+                )
+            )
+            FROM Category c LEFT JOIN FETCH Transaction t ON t.category.id = c.id
+            WHERE c.account.id = :accountId AND c.type = :type
+            GROUP BY c.id""")
+    List<AnalyticsDataDto> findMediumAmountOfAllCategoriesByAccountIdAndType(
+            Long accountId,
+            Type type
+    );
 }

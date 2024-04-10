@@ -184,7 +184,7 @@ function getUndefinedTransactionsData() {
 function registerAccount() {
     $.ajax({
         method: 'GET',
-        url: './account/register/single',
+        url: './accounts/register/single',
         success: function () {
             if (alert('Account was successfully registered')) {
             } else window.location.reload();

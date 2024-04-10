@@ -1,5 +1,8 @@
 package com.redartis.expense.repository;
 
+import com.redartis.dto.analytics.AnalyticsDataMonthDto;
+import com.redartis.dto.analytics.MonthlyAnalyticsByCategoryDto;
+import com.redartis.dto.constants.Type;
 import com.redartis.expense.model.Transaction;
 import java.util.List;
 import java.util.Optional;
@@ -9,7 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
@@ -41,18 +46,14 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
     @Query("""
             SELECT t FROM Transaction t
             LEFT JOIN FETCH t.category
-            WHERE MONTH(t.date) = :month AND YEAR(t.date) = :year AND t.category.id = :categoryId
+            WHERE MONTH(t.date) = :month AND YEAR(t.date) = :year
+            AND t.category.name = :categoryName
             ORDER BY t.date""")
     List<Transaction> findTransactionsBetweenDatesAndCategory(
             Integer year,
             Integer month,
-            long categoryId
+            String categoryName
     );
-
-    @Query("""
-            SELECT DISTINCT EXTRACT(year from t.date) from Transaction t
-            WHERE t.account.id = :accountId""")
-    List<Integer> findAvailableYearsForAccountByAccountId(Long accountId);
 
     @Modifying
     @Query("""
@@ -77,4 +78,37 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             UPDATE Transaction t SET t.category.id = NULL
             WHERE t.account.id = :accountId AND t.message = :message""")
     void removeCategoryIdFromTransactionsWithSameMessage(String message, Long accountId);
+
+    @Transactional
+    void deleteAllByAccountId(Long accountId);
+
+    @Query("""
+            SELECT DISTINCT EXTRACT(year from t.date) from Transaction t
+            WHERE t.account.id = :accountId""")
+    List<Integer> findAvailableYearsForAccountByAccountId(Long accountId);
+
+    @Query("""
+            SELECT new com.redartis.dto.analytics.MonthlyAnalyticsByCategoryDto(
+                cast(SUM(t.amount) as bigdecimal),
+                c.name,
+                cast(MONTH(t.date) as int)
+            )
+            FROM Transaction t JOIN Category c ON t.category.id = c.id
+            WHERE t.account.id = :accountId AND YEAR(t.date) = :year AND c.type = :type
+            GROUP BY c.id, MONTH(t.date), c.name""")
+    List<MonthlyAnalyticsByCategoryDto> findMonthlyStatisticsByYearAndAccountIdAndType(
+            Long accountId,
+            Integer year,
+            Type type
+    );
+
+    @Query(value = """
+            SELECT TRIM(to_char(t.date, 'Month')) AS month,
+            SUM(CASE WHEN c.type = 'INCOME' THEN t.amount ELSE 0 END) AS totalIncome,
+            SUM(CASE WHEN c.type = 'EXPENSE' THEN t.amount ELSE 0 END) AS totalExpense
+            FROM transactions t JOIN categories c ON t.category_id = c.id
+            WHERE t.account_id = :accountId AND EXTRACT(YEAR FROM t.date) = :year
+            GROUP BY month
+            ORDER BY month""", nativeQuery = true)
+    List<AnalyticsDataMonth> getTotalIncomeOutcomePerMonth(Long accountId, int year);
 }

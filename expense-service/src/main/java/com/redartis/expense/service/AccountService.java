@@ -8,6 +8,7 @@ import com.redartis.expense.model.Account;
 import com.redartis.expense.model.User;
 import com.redartis.expense.repository.AccountRepository;
 import com.redartis.expense.repository.CategoryRepository;
+import com.redartis.expense.repository.KeywordRepository;
 import com.redartis.expense.repository.TransactionRepository;
 import com.redartis.expense.util.TelegramUtils;
 import java.security.Principal;
@@ -22,6 +23,7 @@ public class AccountService {
     private final AccountRepository accountRepository;
     private final UserService userService;
     private final CategoryRepository categoryRepository;
+    private final KeywordRepository keywordRepository;
     private final TransactionRepository transactionRepository;
     private final TelegramUtils telegramUtils;
     private final UserMapper userMapper;
@@ -147,15 +149,21 @@ public class AccountService {
         transactionRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
     }
 
-    private Account getOldAccount(Long userId) {
+    public Account getOldAccount(Long userId) {
         return getAccountByChatId(userId);
     }
 
-    private Account getNewAccount(Long userId) {
+    public Account getNewAccount(Long userId) {
         return accountRepository.findNewAccountByUserId(userId);
     }
 
     public int getGroupAccountsCount() {
         return accountRepository.getGroupAccountsCount();
+    }
+
+    public void deletingAllTransactionsCategoriesKeywordsByAccountId(Long accountId) {
+        //keywordRepository.deleteAllByKeywordId_AccountId(accountId);
+        //transactionRepository.deleteAllByAccountId(accountId);
+        categoryRepository.deleteAllByAccountId(accountId);
     }
 }

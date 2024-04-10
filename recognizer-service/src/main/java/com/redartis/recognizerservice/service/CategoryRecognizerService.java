@@ -56,9 +56,9 @@ public class CategoryRecognizerService {
             List<CategoryDto> categories,
             UUID transactionId) {
         Long suggestedCategoryId = recognizeCategory(message, categories).id();
-        TransactionDto transactionDTO = TransactionDto.builder()
+        TransactionDto transactionDto = TransactionDto.builder()
                 .suggestedCategoryId(suggestedCategoryId)
                 .id(transactionId).build();
-        expenseTrackerFeign.editTransaction(transactionDTO);
+        expenseTrackerFeign.editTransaction(transactionDto);
     }
 }

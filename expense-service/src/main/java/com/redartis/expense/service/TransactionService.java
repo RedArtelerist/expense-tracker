@@ -4,6 +4,7 @@ import com.redartis.dto.transaction.TransactionDto;
 import com.redartis.dto.transaction.TransactionMessageDto;
 import com.redartis.dto.transaction.TransactionResponseDto;
 import com.redartis.expense.exception.TransactionNotFoundException;
+import com.redartis.expense.feign.TelegramBotFeign;
 import com.redartis.expense.mapper.TransactionMapper;
 import com.redartis.expense.model.Account;
 import com.redartis.expense.model.Category;
@@ -37,6 +38,7 @@ public class TransactionService {
     private final TransactionProcessingService transactionProcessingService;
     private final UserService userService;
     private final AccountService accountService;
+    private final TelegramBotFeign telegramBotFeign;
 
     public long getTransactionsCount() {
         return transactionRepository.count();
@@ -64,6 +66,10 @@ public class TransactionService {
         transactionRepository.save(transaction);
     }
 
+    public void saveAllTransactions(List<Transaction> transactionList) {
+        transactionRepository.saveAll(transactionList);
+    }
+
     @Transactional
     public void deleteTransactionById(UUID id) {
         Optional<Transaction> transactionToDelete = transactionRepository.findById(id);
@@ -71,7 +77,7 @@ public class TransactionService {
             getKeywordByTransaction(transactionToDelete.get())
                     .ifPresent(keywordRepository::delete);
             transactionRepository.deleteById(id);
-            // telegramBotFeign.deleteTelegramMessageById(id);
+            telegramBotFeign.deleteTelegramMessageById(id);
         }
     }
 
@@ -93,7 +99,7 @@ public class TransactionService {
         transaction.setMessage(transactionDto.getMessage());
 
         if (transaction.getCategory() != null
-                && !transaction.getCategory().getName().equals(transactionDto.getCategoryName())) {
+            && !transaction.getCategory().getName().equals(transactionDto.getCategoryName())) {
             keyword.ifPresent(keywordRepository::delete);
         } else if (!transactionDto.getCategoryName().equals("Unrecognized")
                    && transactionDto.getMessage() != null) {
@@ -172,7 +178,7 @@ public class TransactionService {
                 .toList();
     }
 
-    public List<TransactionDto> findAllTransactionsForAccountByChatId(Long chatId) {
+    public List<TransactionDto> findTransactionsForAccountByChatId(Long chatId) {
         Account account = accountService.getAccountByChatId(chatId);
         return transactionRepository.findAllByAccountId(account.getId())
                 .stream()
@@ -221,11 +227,11 @@ public class TransactionService {
     public List<TransactionDto> getTransactionsByPeriodAndCategory(
             Integer year,
             Integer month,
-            long categoryId) {
+            String categoryName) {
         return transactionRepository.findTransactionsBetweenDatesAndCategory(
                         year,
                         month,
-                        categoryId)
+                        categoryName)
                 .stream()
                 .map(transactionMapper::mapTransactionToDto)
                 .collect(Collectors.toList());

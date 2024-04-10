@@ -58,8 +58,8 @@ public class TransactionController {
     public List<TransactionDto> getTransactionsByPeriodAndCategory(
             @RequestParam Integer year,
             @RequestParam Integer month,
-            @RequestParam long categoryId) {
-        return transactionService.getTransactionsByPeriodAndCategory(year, month, categoryId);
+            @RequestParam String category) {
+        return transactionService.getTransactionsByPeriodAndCategory(year, month, category);
     }
 
     @GetMapping("/history")

@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class FeignConfiguration {
-    private final String HEADER_NAME = "X-INTERNAL-KEY";
+    private static final String HEADER_NAME = "X-INTERNAL-KEY";
 
     @Value("${authorization-header.header-value}")
     private String headerValue;

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Настройки</title>
+    <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="/css/navbar.css" rel="stylesheet" type="text/css"/>
+    <link href="/css/settings.css" rel="stylesheet" type="text/css"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+</head>
+<body>
+<div class="loader" id="loader">
+</div>
+
+<
+<header id="header">
+    <nav class="links" style="--items: 6;">
+        <a id="telegram-bot-link" target="_blank">
+            <i class="fa fa-telegram"></i>
+        </a>
+        <a href="/">Overview</a>
+        <a href="/history">History</a>
+        <a href="/analytics">Analytics</a>
+        <a href="/micromanagement">Micromanagement</a>
+        <a href="/settings"><i class="fa fa-cog"></i></a>
+        <span class="line"></span>
+    </nav>
+</header>
+<div class="content">
+    <div class="info">
+        <button id="downloadButton" class="get-backup-button">Download data backup</button>
+    </div>
+</div>
+<div class="info">
+    <h5></h5>
+    <button id="bugReportButton" class="btn-danger">Submit a bug report</button>
+</div>
+
+<div class="modal" id="bugReportModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Send message</h3>
+                <button class="close" data-dismiss="modal">x</button>
+            </div>
+            <div class="modal-body">
+                <input name="message" type="text"
+                       class="form-control form-control-sm"
+                       id="messageEdit">
+            </div>
+            <div class="modal-footer">
+                <h6></h6>
+                <button id="sendReport" type="submit" class="btn btn-primary">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="content">
+    <div class="info">
+        <p style="color:red">Recover data from file</p>
+        <button id="readButton" class="btn-danger" onclick="saveFile()">Restore</button>
+    </div>
+</div>
+
+<div class="modal-additional-confirmation" id="modal-additional-confirmation">
+    <div class="modal-additional-confirmation-content">
+        <span class="close" onclick="closeModalConfirmation()">&times;</span>
+        <form id="formToFile">
+            <p>Are you sure? All data will be overwritten</p>
+            <input type="file" id="file">
+            <input type="button" onclick="readFile()" value="Load">
+            <input type="button" class="modal-additional-confirmation-close" onclick="closeModalConfirmation()"
+                   value="Cancel">
+            <p></p>
+            <div class="loader" >
+                <div class="lds-circle"><div></div></div>
+                <div class="lds-circle"><div></div></div>
+                <div class="lds-circle"><div></div></div>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<div class="modal-successful-backup" id="modal-successful-backup">
+    <div class="modal-successful-backup-content">
+        <span class="close" onclick="closeModalSuccessfulBackup()">&times;</span>
+        <p>Data restored!</p>
+        <input type="button" class="modal-additional-confirmation-close" onclick="closeModalSuccessfulBackup()"
+               value="Ok">
+    </div>
+</div>
+
+</body>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
+<script src="/scripts/setting.js"></script>
+<script src="/scripts/telegram_bot_href_scripts.js" type="text/javascript"></script>
+</html>

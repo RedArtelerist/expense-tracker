@@ -13,6 +13,8 @@ import com.redartis.expense.repository.CategoryRepository;
 import com.redartis.expense.repository.KeywordRepository;
 import com.redartis.expense.repository.TransactionRepository;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
@@ -38,7 +40,7 @@ public class CategoryService {
     }
 
     public List<CategoryDto> findCategoriesByChatId(Long chatId) {
-        return accountService.getAccountByChatId(chatId)
+        return accountService.getAccountByChatIdWithCategories(chatId)
                 .getCategories()
                 .stream()
                 .map(categoryMapper::mapToDto)
@@ -93,6 +95,10 @@ public class CategoryService {
         }
     }
 
+    public void saveAllCategories(Set<Category> categories) {
+        categoryRepository.saveAll(categories);
+    }
+
     public void updateCategory(Long userId, CategoryDto categoryDto) {
         Account account = accountService.getAccountByUserIdWithCategories(userId);
         Category updatedCategory = categoryMapper.mapToCategory(categoryDto, account);
@@ -111,5 +117,12 @@ public class CategoryService {
         keywordRepository.updateCategoryId(categoryToMergeId, categoryToChangeId);
         transactionRepository.updateCategoryId(categoryToMergeId, categoryToChangeId);
         categoryRepository.deleteById(categoryToMergeId);
+    }
+
+    public Optional<CategoryDto> findCategoryByNameFromList(List<CategoryDto> categories,
+                                                            String categoryName) {
+        return categories.stream()
+                .filter(category -> categoryName.equals(category.name()))
+                .findFirst();
     }
 }

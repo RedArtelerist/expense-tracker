@@ -1,0 +1,59 @@
+databaseChangeLog:
+  - changeSet:
+      id: 01.03.2024-create-telegram-messages-table
+      author: RedArtis
+      changes:
+        - createTable:
+            tableName: telegram_messages
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: message_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: chat_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: transaction_id
+                  type: uuid
+
+  - changeSet:
+      id: 01.03.2024-create-merge-requests-table
+      author: RedArtis
+      changes:
+        - createTable:
+            tableName: merge_requests
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: message_id
+                  type: int
+                  constraints:
+                    nullable: false
+              - column:
+                  name: chat_id
+                  type: bigint
+                  constraints:
+                    nullable: false
+              - column:
+                  name: completed
+                  type: boolean
+              - column:
+                  name: date
+                  type: timestamp
+                  constraints:
+                    nullable: false
