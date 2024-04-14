@@ -20,9 +20,7 @@ public class TransactionHandlerImplSumAmountAtFront implements TransactionHandle
                 .replace(SPACE, NOTHING);
         Stream<String> amountAsStream = Arrays.stream(amountAsString.split(PLUS));
         final float[] sum = {0};
-        amountAsStream.forEach(t -> {
-            sum[0] += Float.parseFloat(t);
-        });
+        amountAsStream.forEach(t -> sum[0] += Float.parseFloat(t));
         return BigDecimal.valueOf(sum[0]);
     }
 
@@ -36,6 +34,6 @@ public class TransactionHandlerImplSumAmountAtFront implements TransactionHandle
     @Override
     public String getRegExp() {
         return "^(\\d*(\\,|\\.)?\\d+)((\\s*)(\\+((\\s*)\\d*(\\,|\\.)?\\d+)"
-               + "(\\s*)))+\\s+([a-zA-Zа-яА-я0-9\\p{P}\\s]+)";
+               + "(\\s*)))+\\s+([a-zA-Zа-яА-яії0-9\\p{P}\\s]+)";
     }
 }

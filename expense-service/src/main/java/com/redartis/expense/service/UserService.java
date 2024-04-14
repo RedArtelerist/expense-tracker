@@ -20,10 +20,6 @@ public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
-    }
-
     public long getUsersCount() {
         return userRepository.count();
     }
@@ -46,17 +42,17 @@ public class UserService {
     @Transactional
     public void saveUser(TelegramAuthRequest telegramAuthRequest) {
         try {
-            User user = getUserById(telegramAuthRequest.getId());
-            if (!(Objects.equals(user.getUsername(), telegramAuthRequest.getUsername())
-                    && Objects.equals(user.getFirstName(), telegramAuthRequest.getFirstName())
-                    && Objects.equals(user.getLastName(), telegramAuthRequest.getLastName())
-                    && Objects.equals(user.getPhotoUrl(), telegramAuthRequest.getPhotoUrl()))) {
-                userRepository.updateUserDetailsByUserId(telegramAuthRequest.getId(),
-                        telegramAuthRequest.getUsername(),
-                        telegramAuthRequest.getFirstName(),
-                        telegramAuthRequest.getLastName(),
-                        telegramAuthRequest.getPhotoUrl(),
-                        telegramAuthRequest.getAuthDate());
+            User user = getUserById(telegramAuthRequest.id());
+            if (!(Objects.equals(user.getUsername(), telegramAuthRequest.username())
+                    && Objects.equals(user.getFirstName(), telegramAuthRequest.firstName())
+                    && Objects.equals(user.getLastName(), telegramAuthRequest.lastName())
+                    && Objects.equals(user.getPhotoUrl(), telegramAuthRequest.photoUrl()))) {
+                userRepository.updateUserDetailsByUserId(telegramAuthRequest.id(),
+                        telegramAuthRequest.username(),
+                        telegramAuthRequest.firstName(),
+                        telegramAuthRequest.lastName(),
+                        telegramAuthRequest.photoUrl(),
+                        telegramAuthRequest.authDate());
             }
         } catch (UserNotFoundException e) {
             userRepository.save(userMapper.mapTelegramAuthToUser(telegramAuthRequest));

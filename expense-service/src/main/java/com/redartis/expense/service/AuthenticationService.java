@@ -10,7 +10,6 @@ import io.jsonwebtoken.Claims;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
-import javax.management.InstanceNotFoundException;
 import javax.naming.AuthenticationException;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -27,23 +26,22 @@ public class AuthenticationService {
     private final JwtProvider jwtProvider;
 
     public JwtResponse login(TelegramAuthRequest telegramAuthRequest)
-            throws NoSuchAlgorithmException, InvalidKeyException, InstanceNotFoundException {
+            throws NoSuchAlgorithmException, InvalidKeyException {
         if (telegramVerificationService.verify(telegramAuthRequest)) {
             userService.saveUser(telegramAuthRequest);
-            User user = userService.getUserById(telegramAuthRequest.getId());
+            User user = userService.getUserById(telegramAuthRequest.id());
             return new JwtResponse(
                     jwtProvider.generateAccessToken(user),
                     jwtProvider.generateRefreshToken(user)
             );
         } else {
             throw new TelegramAuthException("Telegram authentication failed for user "
-                    + telegramAuthRequest.getUsername()
+                    + telegramAuthRequest.username()
                     + ": encoded data does not match with the hash");
         }
     }
 
-    public JwtResponse getAccessToken(@NonNull String refreshToken)
-            throws AuthenticationException, InstanceNotFoundException {
+    public JwtResponse getAccessToken(@NonNull String refreshToken) throws AuthenticationException {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String id = claims.getSubject();
@@ -57,8 +55,7 @@ public class AuthenticationService {
         return new JwtResponse(null, null);
     }
 
-    public JwtResponse refresh(@NonNull String refreshToken)
-            throws AuthenticationException, InstanceNotFoundException {
+    public JwtResponse refresh(@NonNull String refreshToken) throws AuthenticationException {
         if (jwtProvider.validateRefreshToken(refreshToken)) {
             final Claims claims = jwtProvider.getRefreshClaims(refreshToken);
             final String id = claims.getSubject();

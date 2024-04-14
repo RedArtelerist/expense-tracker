@@ -30,4 +30,8 @@ public class MergeRequestService {
     public void updateMergeRequestCompletionByChatId(Long chatId) {
         mergeRequestRepository.updateMergeRequestCompletionByChatId(chatId);
     }
+
+    public void deleteMergeRequestsByChatId(Long chatId) {
+        mergeRequestRepository.deleteByChatId(chatId);
+    }
 }

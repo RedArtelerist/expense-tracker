@@ -18,12 +18,12 @@ public class UserMapper {
 
     public User mapTelegramAuthToUser(TelegramAuthRequest telegramAuthRequest) {
         return User.builder()
-                .id(telegramAuthRequest.getId())
-                .username(telegramAuthRequest.getUsername())
-                .firstName(telegramAuthRequest.getFirstName())
-                .lastName(telegramAuthRequest.getLastName())
-                .photoUrl(telegramAuthRequest.getPhotoUrl())
-                .authDate(telegramAuthRequest.getAuthDate())
+                .id(telegramAuthRequest.id())
+                .username(telegramAuthRequest.username())
+                .firstName(telegramAuthRequest.firstName())
+                .lastName(telegramAuthRequest.lastName())
+                .photoUrl(telegramAuthRequest.photoUrl())
+                .authDate(telegramAuthRequest.authDate())
                 .build();
     }
 }

@@ -7,7 +7,6 @@ import com.redartis.expense.util.CookieUtils;
 import jakarta.servlet.http.HttpServletResponse;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import javax.management.InstanceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +24,7 @@ public class AuthController {
 
     @PostMapping("/login")
     public void login(@RequestBody TelegramAuthRequest authRequest, HttpServletResponse response)
-            throws InstanceNotFoundException, NoSuchAlgorithmException, InvalidKeyException {
+            throws NoSuchAlgorithmException, InvalidKeyException {
         JwtResponse token = authenticationService.login(authRequest);
         cookieUtils.addAccessTokenCookie(token, response);
     }

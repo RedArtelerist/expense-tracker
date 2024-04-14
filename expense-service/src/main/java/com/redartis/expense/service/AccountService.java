@@ -13,6 +13,7 @@ import com.redartis.expense.repository.TransactionRepository;
 import com.redartis.expense.util.TelegramUtils;
 import java.security.Principal;
 import java.util.List;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,6 +40,11 @@ public class AccountService {
                 () -> new AccountNotFoundException("Can't find account by chatId=" + chatId));
     }
 
+    public Account getAccountByChatIdWithUsers(Long chatId) {
+        return accountRepository.findByChatIdWithUsers(chatId).orElseThrow(
+                () -> new AccountNotFoundException("Can't find account by chatId=" + chatId));
+    }
+
     public Account getAccountByChatIdWithCategories(Long chatId) {
         return accountRepository.findByChatIdWithCategories(chatId).orElseThrow(
                 () -> new AccountNotFoundException("Can't find account by chatId=" + chatId));
@@ -50,14 +56,6 @@ public class AccountService {
 
     public Account getAccountByUserIdWithCategories(Long userId) {
         return userService.getUserByIdWithAccountCategories(userId).getAccount();
-    }
-
-    public void saveAccount(Account account) {
-        accountRepository.save(account);
-    }
-
-    public void deleteAccountById(Long id) {
-        accountRepository.deleteById(id);
     }
 
     public void registerSingleAccount(Principal principal) {
@@ -111,17 +109,17 @@ public class AccountService {
         chatMembers.forEach(this::addNewChatMemberToAccount);
     }
 
+    @Transactional
     public void removeChatMemberFromAccount(ChatMemberDto chatMemberDto) {
         User user = userService.getUserById(chatMemberDto.userId());
-        Account account = getAccountByChatId(chatMemberDto.userId());
-
-        if (account != null) {
-            user.setAccount(account);
-            userService.saveUser(user);
-        } else {
-            user.setAccount(null);
-            userService.saveUser(user);
-        }
+        Long groupAccountId = user.getAccount().getId();
+        accountRepository.findByChatId(chatMemberDto.userId())
+                .ifPresentOrElse(
+                        user::setAccount,
+                        () -> user.setAccount(null)
+                );
+        userService.saveUser(user);
+        transactionRepository.deleteAllByAccountIdAndTelegramUserId(groupAccountId, user.getId());
     }
 
     @Transactional
@@ -162,8 +160,22 @@ public class AccountService {
     }
 
     public void deletingAllTransactionsCategoriesKeywordsByAccountId(Long accountId) {
-        //keywordRepository.deleteAllByKeywordId_AccountId(accountId);
-        //transactionRepository.deleteAllByAccountId(accountId);
+        keywordRepository.deleteAllByKeywordId_AccountId(accountId);
+        transactionRepository.deleteAllByAccountId(accountId);
         categoryRepository.deleteAllByAccountId(accountId);
+    }
+
+    @Transactional
+    public void deleteGroupAccount(Long chatId) {
+        Account account = getAccountByChatIdWithUsers(chatId);
+
+        Set<User> users = account.getUsers();
+        users.forEach(user -> user.setAccount(
+                accountRepository.findByChatId(user.getId()).orElse(null)
+        ));
+        users.forEach(userService::saveUser);
+
+        deletingAllTransactionsCategoriesKeywordsByAccountId(account.getId());
+        accountRepository.delete(account);
     }
 }

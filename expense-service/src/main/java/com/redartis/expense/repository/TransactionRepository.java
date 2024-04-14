@@ -38,6 +38,13 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
 
     @Query("""
             SELECT t FROM Transaction t
+            LEFT JOIN FETCH t.category
+            WHERE t.account.id = :accountId AND t.telegramUserId = :userId
+            ORDER BY t.date DESC""")
+    List<Transaction> findAllByAccountIdAndUserId(Long accountId, Long userId);
+
+    @Query("""
+            SELECT t FROM Transaction t
             WHERE t.account.id = :accountId AND t.category.id is null""")
     List<Transaction> findAllWithoutCategoriesByAccountId(Long accountId);
 
@@ -77,9 +84,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             WHERE t.account.id = :accountId AND t.message = :message""")
     void removeCategoryIdFromTransactionsWithSameMessage(String message, Long accountId);
 
-    @Transactional
-    void deleteAllByAccountId(Long accountId);
-
     @Query("""
             SELECT DISTINCT EXTRACT(year from t.date) from Transaction t
             WHERE t.account.id = :accountId""")
@@ -109,4 +113,10 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             GROUP BY month
             ORDER BY month""", nativeQuery = true)
     List<AnalyticsDataMonth> getTotalIncomeOutcomePerMonth(Long accountId, int year);
+
+    @Transactional
+    void deleteAllByAccountId(Long accountId);
+
+    @Modifying
+    void deleteAllByAccountIdAndTelegramUserId(Long accountId, Long telegramUserId);
 }

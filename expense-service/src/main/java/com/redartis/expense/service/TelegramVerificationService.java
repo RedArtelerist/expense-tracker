@@ -27,8 +27,9 @@ public class TelegramVerificationService {
 
     public boolean verify(TelegramAuthRequest telegramAuthRequest)
             throws NoSuchAlgorithmException, InvalidKeyException {
-        String hash = telegramAuthRequest.getHash();
-        return hash.equals(encodeHmacSha256(getDataToHash(telegramAuthRequest)));
+        String hash = telegramAuthRequest.hash();
+        String hashToCompare = encodeHmacSha256(getDataToHash(telegramAuthRequest));
+        return hash.equals(hashToCompare);
     }
 
     private String encodeHmacSha256(String requestData)
@@ -42,21 +43,22 @@ public class TelegramVerificationService {
 
     private String getDataToHash(TelegramAuthRequest authRequest) {
         StringBuilder data = new StringBuilder()
-                .append("auth_date=").append(authRequest.getAuthDate()).append(LINE_SEPARATOR)
-                .append("first_name=").append(authRequest.getFirstName()).append(LINE_SEPARATOR)
-                .append("id=").append(authRequest.getId()).append(LINE_SEPARATOR);
+                .append("auth_date=").append(authRequest.authDate()).append(LINE_SEPARATOR)
+                .append("first_name=").append(authRequest.firstName()).append(LINE_SEPARATOR)
+                .append("id=").append(authRequest.id()).append(LINE_SEPARATOR);
 
-        Optional.ofNullable(authRequest.getLastName())
+        Optional.ofNullable(authRequest.lastName())
                 .ifPresent(lastName -> data.append("last_name=")
-                        .append(lastName)
-                        .append(LINE_SEPARATOR)
+                        .append(lastName).append(LINE_SEPARATOR)
                 );
-        Optional.ofNullable(authRequest.getPhotoUrl())
+
+        Optional.ofNullable(authRequest.photoUrl())
                 .ifPresent(photoUrl -> data.append("photo_url=")
-                        .append(photoUrl)
-                        .append(LINE_SEPARATOR)
+                        .append(photoUrl).append(LINE_SEPARATOR)
                 );
-        data.append("username=").append(authRequest.getUsername());
+
+        Optional.ofNullable(authRequest.username())
+                .ifPresent(username -> data.append("username=").append(username));
         return data.toString();
     }
 }

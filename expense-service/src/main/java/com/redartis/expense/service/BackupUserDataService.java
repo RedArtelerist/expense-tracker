@@ -7,7 +7,9 @@ import com.redartis.expense.mapper.CategoryMapper;
 import com.redartis.expense.model.Account;
 import com.redartis.expense.model.Category;
 import com.redartis.expense.model.Transaction;
+import com.redartis.expense.model.User;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -29,8 +31,8 @@ public class BackupUserDataService {
         return createBackup(chatId);
     }
 
-    public BackupUserDataDto createBackupRemovedUserData(Long telegramId) {
-        return createBackup(telegramId);
+    public BackupUserDataDto createBackupRemovedUserData(Long chatId, Long userId) {
+        return createBackupForGroupMember(chatId, userId);
     }
 
     public BackupUserDataDto createBackup(Long chatId) {
@@ -41,6 +43,40 @@ public class BackupUserDataService {
                 .categories(categories)
                 .transactions(transactions)
                 .build();
+    }
+
+    public BackupUserDataDto createBackupForGroupMember(Long chatId, Long userId) {
+        var categories = categoryService.findCategoriesByChatId(chatId);
+        var transactions = transactionService
+                .findTransactionsForAccountByChatIdAndUserId(chatId, userId);
+
+        return BackupUserDataDto.builder()
+                .categories(categories)
+                .transactions(transactions)
+                .build();
+    }
+
+    private BackupUserDataDto createBackupForGroupMember(
+            Long chatId,
+            Long userId,
+            List<CategoryDto> categories) {
+        var transactions = transactionService
+                .findTransactionsForAccountByChatIdAndUserId(chatId, userId);
+
+        return BackupUserDataDto.builder()
+                .categories(categories)
+                .transactions(transactions)
+                .build();
+    }
+
+    public Map<Long, BackupUserDataDto> createBackupForGroupAccount(Long chatId) {
+        Account account = accountService.getAccountByChatIdWithUsers(chatId);
+        var categories = categoryService.findCategoriesByChatId(chatId);
+        return account.getUsers().stream()
+                .collect(Collectors.toMap(
+                        User::getId,
+                        user -> createBackupForGroupMember(chatId, user.getId(), categories)
+                ));
     }
 
     public void writingDataFromBackupFile(BackupUserDataDto backupUserDataDto, Long telegramId) {

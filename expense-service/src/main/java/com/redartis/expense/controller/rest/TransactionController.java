@@ -120,7 +120,7 @@ public class TransactionController {
         transactionService.updateTransaction(transactionDto);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/update/{id}")
     public TransactionResponseDto updateTransaction(
             @RequestBody TransactionMessageDto transactionMessage,
             @PathVariable("id") UUID id) {

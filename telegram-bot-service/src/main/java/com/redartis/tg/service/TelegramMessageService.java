@@ -30,4 +30,8 @@ public class TelegramMessageService {
     public TelegramMessage getTelegramMessageByMessageIdAndChatId(Integer messageId, Long chatId) {
         return telegramMessageRepository.findByMessageIdAndChatId(messageId, chatId);
     }
+
+    public void deleteTransactionMessagesByChatId(Long chatId) {
+        telegramMessageRepository.deleteByChatId(chatId);
+    }
 }

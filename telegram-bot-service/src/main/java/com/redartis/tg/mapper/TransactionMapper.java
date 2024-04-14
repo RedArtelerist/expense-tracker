@@ -7,9 +7,14 @@ import org.springframework.stereotype.Component;
 public class TransactionMapper {
     public String mapTransactionResponseToTelegramMessage(
             TransactionResponseDto transactionResponseDto) {
-        return "Saved to " + transactionResponseDto.type()
-                + " -> " + transactionResponseDto.category()
-                + ". Amount: " + transactionResponseDto.amount()
-                + " Description: " + transactionResponseDto.comment();
+        return """
+                Saved to %s -> %s.
+                Amount: %s.
+                Description: %s.""".formatted(
+                transactionResponseDto.type(),
+                transactionResponseDto.category(),
+                transactionResponseDto.amount(),
+                transactionResponseDto.comment()
+        );
     }
 }

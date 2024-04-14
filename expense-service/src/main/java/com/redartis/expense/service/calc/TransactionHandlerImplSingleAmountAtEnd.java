@@ -16,6 +16,6 @@ public class TransactionHandlerImplSingleAmountAtEnd implements TransactionHandl
 
     @Override
     public String getRegExp() {
-        return "^([a-zA-Zа-яА-я0-9\\p{P}\\s]+)(\\s+)(\\d*(\\,|\\.)?\\d+)$";
+        return "^([a-zA-Zа-яА-яії0-9\\p{P}\\s]+)(\\s+)(\\d*(\\,|\\.)?\\d+)$";
     }
 }

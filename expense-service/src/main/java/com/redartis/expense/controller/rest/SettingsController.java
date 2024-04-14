@@ -5,6 +5,7 @@ import com.redartis.expense.annotations.OnlyServiceUse;
 import com.redartis.expense.service.BackupUserDataService;
 import com.redartis.expense.util.TelegramUtils;
 import java.security.Principal;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -31,9 +32,16 @@ public class SettingsController {
     }
 
     @OnlyServiceUse
-    @GetMapping("/backup/{id}")
-    public BackupUserDataDto getBackupDataFromRemovedUser(@PathVariable Long id) {
-        return backupUserDataService.createBackupRemovedUserData(id);
+    @GetMapping("/backup/{chatId}/{userId}")
+    public BackupUserDataDto getBackupDataFromRemovedUser(@PathVariable Long chatId,
+                                                          @PathVariable Long userId) {
+        return backupUserDataService.createBackupRemovedUserData(chatId, userId);
+    }
+
+    @OnlyServiceUse
+    @GetMapping("/backup/{chatId}")
+    public Map<Long, BackupUserDataDto> getBackupForGroupAccount(@PathVariable Long chatId) {
+        return backupUserDataService.createBackupForGroupAccount(chatId);
     }
 
     @PostMapping("/backup/read")

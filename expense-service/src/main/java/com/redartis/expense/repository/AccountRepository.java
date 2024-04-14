@@ -10,6 +10,9 @@ import org.springframework.stereotype.Repository;
 public interface AccountRepository extends JpaRepository<Account, Long> {
     Optional<Account> findByChatId(Long chatId);
 
+    @Query("SELECT a FROM Account a JOIN FETCH a.users u WHERE a.chatId = :chatId")
+    Optional<Account> findByChatIdWithUsers(Long chatId);
+
     @Query("""
             SELECT a FROM Account a
             LEFT JOIN FETCH a.categories c

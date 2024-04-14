@@ -7,6 +7,7 @@ import com.redartis.dto.transaction.TransactionMessageDto;
 import com.redartis.dto.transaction.TransactionResponseDto;
 import com.redartis.tg.feign.ExpenseServiceFeign;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,10 @@ public class ExpenseRequestService {
         expenseServiceFeign.registerSingleAccount(accountData);
     }
 
+    public void registerGroupAccount(AccountDataDto accountDataDto) {
+        expenseServiceFeign.registerGroupAccount(accountDataDto);
+    }
+
     public void registerGroupAccountAndMergeCategoriesWithoutTransactions(
             AccountDataDto accountDataDto) {
         registerGroupAccount(accountDataDto);
@@ -34,10 +39,6 @@ public class ExpenseRequestService {
             AccountDataDto accountDataDto) {
         registerGroupAccount(accountDataDto);
         mergeWithCategoryAndTransactions(accountDataDto.getUserId());
-    }
-
-    public void registerGroupAccount(AccountDataDto accountDataDto) {
-        expenseServiceFeign.registerGroupAccount(accountDataDto);
     }
 
     public void mergeWithCategoriesAndWithoutTransactions(Long userId) {
@@ -60,17 +61,25 @@ public class ExpenseRequestService {
         expenseServiceFeign.removeChatMemberFromAccount(leftChatMember);
     }
 
-    public BackupUserDataDto getBackup(Long userId) {
-        return expenseServiceFeign.getBackup(userId);
-    }
-
-    public void deleteTransactionById(UUID id) {
-        expenseServiceFeign.deleteTransactionById(id);
+    public void deleteGroupAccount(Long chatId) {
+        expenseServiceFeign.deleteGroupAccount(chatId);
     }
 
     public TransactionResponseDto submitTransactionForUpdate(
             TransactionMessageDto transaction,
             UUID id) {
         return expenseServiceFeign.submitTransactionForUpdate(transaction, id);
+    }
+
+    public void deleteTransactionById(UUID id) {
+        expenseServiceFeign.deleteTransactionById(id);
+    }
+
+    public BackupUserDataDto getBackup(Long chatId, Long userId) {
+        return expenseServiceFeign.getBackupForChatMember(chatId, userId);
+    }
+
+    public Map<Long, BackupUserDataDto> getBackupsForGroupAccount(Long chatId) {
+        return expenseServiceFeign.getBackupForGroupAccount(chatId);
     }
 }

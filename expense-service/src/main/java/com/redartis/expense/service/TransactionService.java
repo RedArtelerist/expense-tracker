@@ -186,6 +186,16 @@ public class TransactionService {
                 .toList();
     }
 
+    public List<TransactionDto> findTransactionsForAccountByChatIdAndUserId(
+            Long chatId,
+            Long userId) {
+        Account account = accountService.getAccountByChatId(chatId);
+        return transactionRepository.findAllByAccountIdAndUserId(account.getId(), userId)
+                .stream()
+                .map(transactionMapper::mapTransactionToDto)
+                .toList();
+    }
+
     public List<TransactionDto> findTransactionsByUserIdLimited(
             Long id,
             Integer pageSize,

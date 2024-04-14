@@ -6,6 +6,7 @@ import com.redartis.dto.telegram.ChatMemberDto;
 import com.redartis.dto.transaction.TransactionMessageDto;
 import com.redartis.dto.transaction.TransactionResponseDto;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -42,14 +43,20 @@ public interface ExpenseServiceFeign {
     @PostMapping("/accounts/remove/user")
     void removeChatMemberFromAccount(@RequestBody ChatMemberDto chatMember);
 
-    @GetMapping("/settings/backup/{id}")
-    BackupUserDataDto getBackup(@PathVariable Long id);
-
-    @DeleteMapping("/transactions/{id}")
-    void deleteTransactionById(@PathVariable("id") UUID id);
+    @DeleteMapping("/accounts/{chatId}")
+    void deleteGroupAccount(@PathVariable Long chatId);
 
     @PutMapping("/transactions/update/{id}")
     TransactionResponseDto submitTransactionForUpdate(
             @RequestBody TransactionMessageDto transactionMessage,
             @PathVariable("id") UUID id);
+
+    @DeleteMapping("/transactions/{id}")
+    void deleteTransactionById(@PathVariable("id") UUID id);
+
+    @GetMapping("/settings/backup/{chatId}/{userId}")
+    BackupUserDataDto getBackupForChatMember(@PathVariable Long chatId, @PathVariable Long userId);
+
+    @GetMapping("/settings/backup/{chatId}")
+    Map<Long, BackupUserDataDto> getBackupForGroupAccount(@PathVariable Long chatId);
 }
