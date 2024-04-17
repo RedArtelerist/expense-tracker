@@ -3,6 +3,7 @@ package com.redartis.tg.util;
 import static com.redartis.tg.util.TelegramBotAnswer.MERGE_REQUEST_TEXT;
 
 import com.redartis.tg.service.MergeRequestService;
+import com.redartis.tg.service.VoiceMessageProcessingService;
 import java.io.File;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +29,7 @@ public class TelegramBotUtil {
     private static final String BLANK_MESSAGE = "";
 
     private final TelegramClient telegramClient;
+    private final VoiceMessageProcessingService voiceMessageProcessingService;
     private final MergeRequestService mergeRequestService;
     private final InlineKeyboardMarkupUtil inlineKeyboardMarkupUtil;
 
@@ -87,14 +89,13 @@ public class TelegramBotUtil {
         Long chatId = message.getChatId();
 
         if (message.hasVoice()) {
-            log.info("user with id " + userId + " and chatId " + chatId + " sending voice");
-            receivedMessageText = "dummy";
-            /*receivedMessageText = voiceMessageProcessingService.processVoiceMessage(
+            log.info("User with id " + userId + " and chatId " + chatId + " sending voice");
+            receivedMessageText = voiceMessageProcessingService.processVoiceMessage(
                     message.getVoice(),
                     userId,
                     chatId
-            );*/
-            log.info("recognition result of user with id %d and chatId %d is: %s"
+            );
+            log.info("Recognition result of user with id %d and chatId %d is: %s"
                     .formatted(userId, chatId, receivedMessageText));
         } else if (message.hasText()) {
             receivedMessageText = message.getText();

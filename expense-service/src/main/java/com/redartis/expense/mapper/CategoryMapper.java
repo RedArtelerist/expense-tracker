@@ -29,6 +29,14 @@ public class CategoryMapper {
     }
 
     public Category mapToCategory(CategoryDto categoryDto, Account account) {
+        return Category.builder()
+                .name(StringUtils.capitalize(categoryDto.name()))
+                .type(categoryDto.type())
+                .account(account)
+                .build();
+    }
+
+    public Category mapToCategoryWithKeywords(CategoryDto categoryDto, Account account) {
         Category category = Category.builder()
                 .name(StringUtils.capitalize(categoryDto.name()))
                 .type(categoryDto.type())

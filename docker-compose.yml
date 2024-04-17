@@ -48,7 +48,7 @@ services:
     image: postgres
     restart: unless-stopped
     ports:
-      - "${POSTGRES_LOCAL_PORT}:${POSTGRES_DOCKER_PORT}"
+      - "5435:5432"
     environment:
       POSTGRES_DB: ${EXPENSE_DB}
       POSTGRES_USER: ${EXPENSE_DB_USER}
@@ -74,7 +74,21 @@ services:
       service: microservice-eureka-config
     environment:
       SPRING_APPLICATION_NAME: "expense-service"
-      SPRING_DATASOURCE_URL: jdbc:postgresql://expense-tracker-db:${POSTGRES_DOCKER_PORT}/${EXPENSE_DB}
+      SPRING_DATASOURCE_URL: jdbc:postgresql://expense-tracker-db:5432/${EXPENSE_DB}
+
+  telegram-bot-db:
+    container_name: telegram-bot-db
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_DB: ${TELEGRAM_BOT_DB}
+      POSTGRES_USER: ${TELEGRAM_BOT_DB_USER}
+      POSTGRES_PASSWORD: ${TELEGRAM_BOT_DB_PASSWORD}
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
 
   telegram-bot-service:
     image: telegram-bot-service:v0.0.1
@@ -83,6 +97,9 @@ services:
       context: .
       dockerfile: telegram-bot-service/Dockerfile
     restart: on-failure
+    depends_on:
+      telegram-bot-db:
+        condition: service_started
     ports:
       - "8200:8200"
     extends:
@@ -90,6 +107,7 @@ services:
       service: microservice-eureka-config
     environment:
       SPRING_APPLICATION_NAME: "telegram-bot-service"
+      SPRING_DATASOURCE_URL: jdbc:postgresql://telegram-bot-db:5432/${TELEGRAM_BOT_DB}
 
   recognizer-service:
     image: recognizer-service:v0.0.1

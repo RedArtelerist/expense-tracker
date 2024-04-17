@@ -28,4 +28,9 @@ public interface TelegramBotAnswer {
     String INVALID_UPDATE_TRANSACTION_TEXT = """
             Invalid transaction for change.
             You may have selected a transaction that has already been changed or a bot message""";
+
+    String VOICE_MESSAGE_TOO_LONG = """
+            Unfortunately, we can't recognize a voice message longer than %d seconds - \
+            try breaking it down into smaller parts :)""";
+
 }

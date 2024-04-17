@@ -100,7 +100,7 @@ public class BackupUserDataService {
 
         // Save categories from backup file for account
         var categorySet = categories.stream()
-                .map(categoryDto -> categoryMapper.mapToCategory(categoryDto, account))
+                .map(categoryDto -> categoryMapper.mapToCategoryWithKeywords(categoryDto, account))
                 .collect(Collectors.toSet());
         categoryService.saveAllCategories(categorySet);
 
