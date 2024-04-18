@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>История транзакций</title>
+    <title>Історія транзакцій</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"
             integrity="sha256-oP6HI9z1XaZNBrJURtCoUT5SUnxFr8s3BzRl+cbzUq8=" crossorigin="anonymous"></script>
@@ -28,10 +28,10 @@
         <a id="telegram-bot-link" target="_blank">
             <i class="fa fa-telegram"></i>
         </a>
-        <a href="/">Overview</a>
-        <a href="/history">History</a>
-        <a href="/analytics">Analytics</a>
-        <a href="/micromanagement">Micromanagement</a>
+        <a href="/">Головна</a>
+        <a href="/history">Історія</a>
+        <a href="/analytics">Аналітика</a>
+        <a href="/micromanagement">Мікроменеджмент</a>
         <a href="/settings"><i class="fa fa-cog"></i></a>
         <span class="line"></span>
     </nav>
@@ -42,11 +42,11 @@
         <table class="table" id="transactions-table">
             <thead class="table-dark">
             <tr>
-                <th>Category</th>
-                <th>Amount</th>
-                <th>Description</th>
-                <th>Date</th>
-                <th>User</th>
+                <th>Категорія</th>
+                <th>Вартість</th>
+                <th>Опис</th>
+                <th>Дата</th>
+                <th>Користувач</th>
                 <th></th>
             </tr>
             </thead>
@@ -60,7 +60,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit transaction</h5>
+                    <h5 class="modal-title">Редагування транзакції</h5>
                     <button class="close" data-dismiss="modal">x</button>
                 </div>
                 <div class="modal-body">
@@ -69,27 +69,27 @@
                             <form method="post" action="#" autocomplete="off">
 
                                 <div hidden class="form-group text-center">
-                                    <label for="idTransactionInForm"><b>Category</b></label>
+                                    <label for="idTransactionInForm"><b>Категорія</b></label>
                                     <input name="idTransaction" type="text"
                                            class="form-control form-control-sm"
                                            id="idTransactionInForm">
                                 </div>
 
                                 <div class="form-group text-center">
-                                    <label for="nameCategoryEdit"><b>Category</b></label>
+                                    <label for="nameCategoryEdit"><b>Категорія</b></label>
                                     <select id="nameCategoryEdit" class="custom-select">
                                     </select>
                                 </div>
 
                                 <div class="form-group text-center">
-                                    <label for="amountEdit"><b>Amount</b></label>
+                                    <label for="amountEdit"><b>Вартість</b></label>
                                     <input name="amount" type="number"
                                            class="form-control form-control-sm"
                                            id="amountEdit">
                                 </div>
 
                                 <div class="form-group text-center">
-                                    <label for="messageEdit"><b>Description</b></label>
+                                    <label for="messageEdit"><b>Опис</b></label>
                                     <input name="message" type="text"
                                            class="form-control form-control-sm"
                                            id="messageEdit">
@@ -101,8 +101,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-secondary">Close</button>
-                    <button id="editBtn" type="submit" class="btn btn-primary">Edit</button>
+                    <button data-dismiss="modal" class="btn btn-secondary">Закрити</button>
+                    <button id="editBtn" type="submit" class="btn btn-primary">Редагувати</button>
                 </div>
             </div>
         </div>
@@ -112,7 +112,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Warning</h5>
+                    <h5 class="modal-title">Попередження</h5>
                     <button class="close" data-dismiss="modal">x</button>
                 </div>
                 <div class="modal-body">
@@ -126,7 +126,7 @@
                                            id="idTransactionInFormDelete">
                                 </div>
                                 <div class="text-modal">
-                                    <p> Are you sure you want to delete:</p>
+                                    <p> Ви впевнені, що хочете видалити:</p>
                                     <p>&nbsp;</p>
                                     <p id="messageDelete"></p>
                                     <p>&nbsp;</p>
@@ -134,7 +134,7 @@
                                     <p>?</p>
                                 </div>
                                 <div class="text-center">
-                                    <p class="center"><small> The keyword associated with this transaction will also be highlighted</small>
+                                    <p class="center"><small> Ключове слово, пов’язане з цією трансакцією, також буде видалено</small>
                                     </p>
                                 </div>
                             </form>
@@ -143,8 +143,8 @@
 
                 </div>
                 <div class="modal-footer">
-                    <button data-dismiss="modal" class="btn btn-secondary">Close</button>
-                    <button id="deleteBtn" type="submit" class="btn btn-primary" onclick="deleteButtonClick()">Delete
+                    <button data-dismiss="modal" class="btn btn-secondary">Закрити</button>
+                    <button id="deleteBtn" type="submit" class="btn btn-primary" onclick="deleteButtonClick()">Видалити
                     </button>
                 </div>
             </div>

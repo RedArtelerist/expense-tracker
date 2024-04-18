@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 19.04.2024-create-bug-report-table
+      author: RedArtis
+      changes:
+        - createTable:
+            tableName: bug_reports
+            columns:
+              - column:
+                  name: id
+                  type: bigint
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: user_id
+                  type: bigint
+                  constraints:
+                    foreignKeyName: fk_bug_reports_user_id_users
+                    references: users(id)
+                    nullable: false
+              - column:
+                  name: report
+                  type: varchar(1024)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: date
+                  type: timestamp
+                  constraints:
+                    nullable: false

@@ -44,7 +44,7 @@ function getAnnualAndMonthlyReportData(year) {
         async: false,
         success: function (data) {
             if (data.length === 0) {
-                alert("You don't have any transactions.")
+                alert("У вас немає транзакцій.")
                 console.log("data is null")
             } else {
                 parseDataAndCreateTableOfExpense(data);
@@ -141,7 +141,7 @@ function addRowBodyInTableOfExpense(totalExpense, numberOfRows) {
         .getElementsByTagName("tbody")[0];
     let tr = table.insertRow(table.rows.length);
 
-    insertTdToBodyInTableOfExpense('TOTAL:', tr, numberOfRows);
+    insertTdToBodyInTableOfExpense('ВСЬОГО:', tr, numberOfRows);
     totalExpense.forEach(monthlyTotalItem => {
         insertTdToBodyInTableOfExpense(monthlyTotalItem, tr, numberOfRows);
     });
@@ -194,7 +194,7 @@ function insertTdToBodyInTableOfExpense(value, parent, numberOfRows) {
     let element = document.createElement("td");
     element.scope = "row";
     element.innerText = value;
-    element.style.height = 80 / numberOfRows + '%'; //Не работает в силу того, что position != fixed
+    element.style.height = 80 / numberOfRows + '%';
     if (value === 0) {
         element.style.backgroundColor = 'rgba(128, 128, 128,' + 0.7 + ')';
         element.style.opacity = String(0.8);
@@ -242,7 +242,7 @@ function getTransactionsByCategoryAndMonth(year, month, category) {
             }
             if (list.innerHTML === "") {
                 let elem = document.createElement('p');
-                elem.innerHTML = "No transactions";
+                elem.innerHTML = "Нема транзакцій";
                 list.appendChild(elem);
             }
         }

@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
     <meta charset="UTF-8">
-    <title>Настройки</title>
+    <title>Налаштування</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
@@ -21,29 +21,29 @@
         <a id="telegram-bot-link" target="_blank">
             <i class="fa fa-telegram"></i>
         </a>
-        <a href="/">Overview</a>
-        <a href="/history">History</a>
-        <a href="/analytics">Analytics</a>
-        <a href="/micromanagement">Micromanagement</a>
+        <a href="/">Головна</a>
+        <a href="/history">Історія</a>
+        <a href="/analytics">Аналітика</a>
+        <a href="/micromanagement">Мікроменеджмент</a>
         <a href="/settings"><i class="fa fa-cog"></i></a>
         <span class="line"></span>
     </nav>
 </header>
 <div class="content">
     <div class="info">
-        <button id="downloadButton" class="get-backup-button">Download data backup</button>
+        <button id="downloadButton" class="get-backup-button">Завантажте резервну копію даних</button>
     </div>
 </div>
 <div class="info">
     <h5></h5>
-    <button id="bugReportButton" class="btn-danger">Submit a bug report</button>
+    <button id="bugReportButton" class="btn-danger">Надішліть звіт про помилку</button>
 </div>
 
 <div class="modal" id="bugReportModal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title">Send message</h3>
+                <h3 class="modal-title">Опишіть проблему</h3>
                 <button class="close" data-dismiss="modal">x</button>
             </div>
             <div class="modal-body">
@@ -53,7 +53,7 @@
             </div>
             <div class="modal-footer">
                 <h6></h6>
-                <button id="sendReport" type="submit" class="btn btn-primary">Send</button>
+                <button id="sendReport" type="submit" class="btn btn-primary">Надіслати</button>
             </div>
         </div>
     </div>
@@ -61,8 +61,8 @@
 
 <div class="content">
     <div class="info">
-        <p style="color:red">Recover data from file</p>
-        <button id="readButton" class="btn-danger" onclick="saveFile()">Restore</button>
+        <p style="color:red">Відновити дані з файлу</p>
+        <button id="readButton" class="btn-danger" onclick="saveFile()">Відновити</button>
     </div>
 </div>
 
@@ -70,11 +70,13 @@
     <div class="modal-additional-confirmation-content">
         <span class="close" onclick="closeModalConfirmation()">&times;</span>
         <form id="formToFile">
-            <p>Are you sure? All data will be overwritten</p>
-            <input type="file" id="file">
-            <input type="button" onclick="readFile()" value="Load">
-            <input type="button" class="modal-additional-confirmation-close" onclick="closeModalConfirmation()"
-                   value="Cancel">
+            <p>Ви впевнені? Усі дані буде перезаписано</p>
+            <div>
+                <input type="file" id="file">
+                <input type="button" onclick="readFile()" value="Завантажити">
+                <input type="button" class="modal-additional-confirmation-close" onclick="closeModalConfirmation()"
+                       value="Відмінити">
+            </div>
             <p></p>
             <div class="loader" >
                 <div class="lds-circle"><div></div></div>
@@ -89,9 +91,9 @@
 <div class="modal-successful-backup" id="modal-successful-backup">
     <div class="modal-successful-backup-content">
         <span class="close" onclick="closeModalSuccessfulBackup()">&times;</span>
-        <p>Data restored!</p>
+        <p>Дані відновлено!</p>
         <input type="button" class="modal-additional-confirmation-close" onclick="closeModalSuccessfulBackup()"
-               value="Ok">
+               value="Ок">
     </div>
 </div>
 

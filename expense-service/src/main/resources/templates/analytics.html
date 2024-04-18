@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Аналитика</title>
+    <title>Аналітика</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
@@ -17,10 +17,10 @@
         <a id="telegram-bot-link" target="_blank">
             <i class="fa fa-telegram"></i>
         </a>
-        <a href="/">Overview</a>
-        <a href="/history">History</a>
-        <a href="/analytics">Analytics</a>
-        <a href="/micromanagement">Micromanagement</a>
+        <a href="/">Головна</a>
+        <a href="/history">Історія</a>
+        <a href="/analytics">Аналітика</a>
+        <a href="/micromanagement">Мікроменеджмент</a>
         <a href="/settings"><i class="fa fa-cog"></i></a>
         <span class="line"></span>
     </nav>
@@ -28,7 +28,7 @@
 <div class="content">
     <div class="info">
         <input id="info__container_1" class="info__switch" type="checkbox">
-        <label for="info__container_1" class="info__headline">Expenses by category</label>
+        <label for="info__container_1" class="info__headline">Витрати по категоріям</label>
         <div class="info__container">
             <canvas id="expenseAnalytics"></canvas>
             <div>
@@ -39,7 +39,7 @@
     </div>
     <div class="info">
         <input id="info__container_2" class="info__switch" type="checkbox">
-        <label for="info__container_2" class="info__headline">Income by category</label>
+        <label for="info__container_2" class="info__headline">Доходи по категоріям</label>
         <div class="info__container">
             <canvas id="incomeAnalytics"></canvas>
             <div>
@@ -50,7 +50,7 @@
     </div>
     <div class="info">
         <input id="info__body_3" class="info__switch" type="checkbox">
-        <label for="info__body_3" class="info__headline">Expenses/income by month</label>
+        <label for="info__body_3" class="info__headline">Витрати/Доходи по місяцям</label>
         <div class="info__body">
             <select id="yearSelect"></select>
             <canvas id="totalExpenseAnalitics"></canvas>
@@ -59,7 +59,7 @@
 
     <div class="info">
         <input id="info__body_4" class="info__switch" type="checkbox">
-        <label for="info__body_4" class="info__headline">Income for the year by category</label>
+        <label for="info__body_4" class="info__headline">Дохід за рік по категоріях</label>
         <div class="info__body">
             <select id="yearSelectForMonthlyAnalytics"></select>
             <canvas id="monthlyYearIncomeAnalytics"></canvas>

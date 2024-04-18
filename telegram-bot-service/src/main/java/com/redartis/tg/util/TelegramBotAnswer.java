@@ -2,35 +2,33 @@ package com.redartis.tg.util;
 
 public interface TelegramBotAnswer {
     String ACCOUNT_NOT_FOUND_MESSAGE = """
-            It looks like you don't have an account yet. \
-            Send /start to create a personal account \
-            or register account with web application: %s""";
+            Схоже, у вас ще немає облікового запису. \
+            Надішліть /start, щоб створити особистий обліковий запис або \
+            авторизуйтесь через веб-додаток: %s""";
     String TRANSACTION_MESSAGE_INVALID = """
-            We were unable to recognize your message.
-            Make sure the amount and item are correct and try again""";
+            Нам не вдалося розпізнати ваше повідомлення.
+            Переконайтеся, що сума та назва правильні, і повторіть спробу""";
     String MERGE_REQUEST_TEXT = """
-            Hello, you added me to the group chat, \
-            now I will track the transactions of all users in this chat.
-
-            Do you want to transfer your financial data and share it?""";
-    String MERGE_REQUEST_COMPLETED_DEFAULT_TEXT = "Happy sharing!";
-    String MERGE_REQUEST_COMPLETED_TEXT = "Account data has been transferred";
+            Привіт, ви додали мене в груповий чат, тепер я буду відстежувати транзакції \
+            всіх користувачів цього чату.
+            Чи хочете ви перенести свої фінансові дані та поділитися ними?""";
+    String MERGE_REQUEST_COMPLETED_DEFAULT_TEXT = "Щасливого користування";
+    String MERGE_REQUEST_COMPLETED_TEXT = "Дані облікового запису були успішно перенесені";
     String REGISTRATION_INFO_TEXT = """
-            To register your account correctly, \
-            make sure that at the time of adding the bot to the chat, \
-            you are the only one in the chat with the bot. \
-            After transferring data, you can add other users""";
-    String INVALID_TRANSACTION_TO_DELETE = "Invalid transaction for deletion";
+            Щоб правильно зареєструвати свій обліковий запис, переконайтеся, \
+            що на момент додавання бота в чат ви перебуваєте в ньому самі. \
+            Після перенесення даних ви можете додати інших користувачів""";
+    String INVALID_TRANSACTION_TO_DELETE = "Недійсна транзакція для видалення";
     String SUCCESSFUL_DELETION_TRANSACTION =
-            "This entry has been successfully deleted!";
+            "Ця транзакція була успішно видалена!";
     String SUCCESSFUL_UPDATE_TRANSACTION_TEXT =
-            "Entry successfully modified.\n";
+            "Транзакція успішно модифікована.\n";
     String INVALID_UPDATE_TRANSACTION_TEXT = """
-            Invalid transaction for change.
-            You may have selected a transaction that has already been changed or a bot message""";
+            Недійсна транзакція для зміни. Можливо, ви вибрали повідомлення бота \
+            або транзакцію, яка вже була змінена""";
 
     String VOICE_MESSAGE_TOO_LONG = """
-            Unfortunately, we can't recognize a voice message longer than %d seconds - \
-            try breaking it down into smaller parts :)""";
+            На жаль, ми не можемо розпізнати голосове повідомлення довше %d секунд. \
+            Спробуйте розбити його на менші частини :)""";
 
 }

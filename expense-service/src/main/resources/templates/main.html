@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Обзор</title>
+    <title>Головна</title>
     <link rel="icon" type="image/x-icon" href="/images/favicon.ico">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
@@ -18,10 +18,10 @@
         <a id="telegram-bot-link" target="_blank">
             <i class="fa fa-telegram"></i>
         </a>
-        <a href="/">Overview</a>
-        <a href="/history">History</a>
-        <a href="/analytics">Analytics</a>
-        <a href="/micromanagement">Micromanagement</a>
+        <a href="/">Головна</a>
+        <a href="/history">Історія</a>
+        <a href="/analytics">Аналітика</a>
+        <a href="/micromanagement">Мікроменеджмент</a>
         <a href="/settings"><i class="fa fa-cog"></i></a>
         <span class="line"></span>
     </nav>
@@ -44,10 +44,10 @@
         <div class="modal-default-category-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <form>
-                <p>We found that you don't have any categories.</p>
-                <p>Add a standard set of categories?</p>
-                <input type="submit" class="submit-default-modal-category" onclick="addDefaultCategories()" value="Yes">
-                <input type="button" class="modal-default-category-close" onclick="rejectionAndCloseModal()" value="No">
+                <p>Ми виявили, що у вас немає жодної категорії.</p>
+                <p>Додати стандартний набір категорій?</p>
+                <input type="submit" class="submit-default-modal-category" onclick="addDefaultCategories()" value="Так">
+                <input type="button" class="modal-default-category-close" onclick="rejectionAndCloseModal()" value="Ні">
             </form>
         </div>
     </div>
@@ -55,12 +55,12 @@
         <div class="modal-verification-merge-content">
             <span class="close" onclick="closeModalVerification()">&times;</span>
             <form class="formVerificationMerge">
-                <p>Are you sure you want to merge categories?
+                <p>Ви впевнені, що бажаєте об’єднати категорії?
                 <p class="information-merge"></p>
-                <p>Merge categories?</p>
-                <input type="submit" class="submit-verification-merge" value="Yes">
+                <p>Об’єднати категорії?</p>
+                <input type="submit" class="submit-verification-merge" value="Так">
                 <input type="button" class="modal-verification-merge-close" onclick="closeModalVerification()"
-                       value="No">
+                       value="Ні">
             </form>
         </div>
     </div>
@@ -68,12 +68,12 @@
         <div class="modal-verification-delete-keyword-content">
             <span class="close" onclick="closeModalDeleteKeyword()">&times;</span>
             <form class="formVerificationDeleteKeyword">
-                <p>Are you sure you want to remove the keyword?
+                <p>Ви впевнені, що хочете видалити ключове слово?
                 <p class="information-delete-keyword"></p>
-                <p>Perform keyword removal?</p>
-                <input type="submit" class="submit-delete-keyword" value="Yes">
+                <p>Виконати видалення ключового слова?</p>
+                <input type="submit" class="submit-delete-keyword" value="Так">
                 <input type="button" class="modal-verification-delete-keyword-close" onclick="closeModalDeleteKeyword()"
-                       value="No">
+                       value="Ні">
             </form>
         </div>
     </div>
@@ -81,7 +81,7 @@
         <div class="modal-add-transaction-fade">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h3 class="modal-title">Add new transaction</h3>
+                    <h3 class="modal-title">Додати нову транзакцію</h3>
                     <button class="close" id="close" data-dismiss="modal">x</button>
                 </div>
                 <div class="modal-body">
@@ -91,7 +91,7 @@
                 </div>
                 <div class="modal-footer">
                     <h6></h6>
-                    <button id="sendTransaction" type="submit" class="btn btn-primary">Send</button>
+                    <button id="sendTransaction" type="submit" class="btn btn-primary">Відправити</button>
                 </div>
             </div>
         </div>

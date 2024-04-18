@@ -61,7 +61,7 @@ function addRow(data) {
     let tr = table.insertRow(table.rows.length);
     tr.id = data.id;
 
-    data.categoryName == null ? data.categoryName = "Unrecognized" : data.categoryName;
+    data.categoryName == null ? data.categoryName = "Нерозпізнана" : data.categoryName;
 
     insertTd(data.categoryName, tr);
     insertTd(data.amount, tr);
@@ -129,7 +129,7 @@ function fillModalWindow(response) {
     $("#idTransactionInForm").val(response.id);
     $("#amountEdit").val(response.amount);
     $("#messageEdit").val(response.message);
-    response.categoryName == null ? categoryNow = "Unrecognized" : categoryNow = response.categoryName;
+    response.categoryName == null ? categoryNow = "Нерозпізнана" : categoryNow = response.categoryName;
     writeAllCategoryInModal();
     $("#nameCategoryEdit").html(options);
 }
@@ -180,7 +180,7 @@ $(function editButtonClick() {
             error: function(xhr, status, error) {
                 let err = JSON.parse(xhr.responseText);
                 if (err.message.indexOf("only_positive_amount_constraint") > 0) {
-                    alert("Error: Amount must be positive value")
+                    alert("Помилка: сума має бути додатним значенням")
                 }
             }
         })

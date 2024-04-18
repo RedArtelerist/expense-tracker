@@ -55,7 +55,7 @@ function drawAnalytics(categories, transactionSums, color, place, placeTable) {
         data: {
             labels: categories,
             datasets: [{
-                label: 'Hryvnias',
+                label: 'Гривень',
                 data: transactionSums,
                 backgroundColor: color,
                 hoverOffset: 1
@@ -174,13 +174,13 @@ function loadData(selectedYear) {
                 labels: labels,
                 datasets: [
                     {
-                        label: 'Expenses',
+                        label: 'Витрати',
                         data: dataset1,
                         borderColor: 'rgb(255, 99, 132)',
                         backgroundColor: 'rgb(255, 99, 132)',
                     },
                     {
-                        label: 'Income',
+                        label: 'Доходи',
                         data: dataset2,
                         borderColor: 'rgb(54, 162, 235)',
                         backgroundColor: 'rgb(54, 162, 235)',
@@ -224,7 +224,7 @@ function drawMonthlyAnalyticsForYear(year) {
     }
 
     let monthlyReportData = getMonthlyReportData(year);
-    let months = ["Jan", "Feb.", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let months = ["Січ", "Лют", "Бер", "Квіт", "Трав", "Черв", "Лип", "Серп", "Верес", "Жовт", "Листоп", "Груд"];
 
 
     var ctx = document.getElementById('monthlyYearIncomeAnalytics').getContext('2d');
@@ -301,7 +301,7 @@ function getMonthName(monthNumber) {
     const date = new Date();
     date.setMonth(monthNumber - 1);
 
-    return date.toLocaleString('en-US', {month: 'short'});
+    return date.toLocaleString('uk', {month: 'short'});
 }
 
 function addDataset(chart, dataset, labelName, color) {

@@ -56,7 +56,6 @@ function saveFile() {
                 date.getFullYear()
             ].join('.');
 
-            //  имя файла с датой и другим текстом
             a.download = dateString + '-account.json';
             a.href = url;
             a.click();
@@ -145,7 +144,7 @@ sendButton.on("click", function () {
     var currentDateTime = currentDate.toISOString();
 
     if (report.trim() === "") {
-        alert("Message cannot be empty");
+        alert("Повідомлення не може бути пустим");
         return;
     }
 

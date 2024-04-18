@@ -6,7 +6,7 @@ window.onload = function () {
     getCategoriesData();
     drawEmptyCircleForModal();
     setInterval(checkUserIsActive, timeout / 2);
-    let toast = toastr["success"]("Loading unrecognized transactions");
+    let toast = toastr["success"]("Завантаження нерозпізнаних транзакцій");
     toastr.options = {
         "closeButton": false,
         "debug": true,
@@ -341,10 +341,10 @@ function drawToast(e, categoryName, transactionDefined, transactionComment) {
     let transactionCommentForButtonName = transactionCommentNoQuote.replaceAll("\"", "_");
     toastr["success"](
         '<div><text font-size="30">' +
-        e.dataTransfer.getData("comment") + ' ' + e.dataTransfer.getData("amount") + ' added to category ' + categoryName +
+        e.dataTransfer.getData("comment") + ' ' + e.dataTransfer.getData("amount") + ' додано в категорію ' + categoryName +
         '</text>' +
         '<div class="buttonUndefine" id="undefineButtonFor_' + transactionCommentForButtonName + '">' +
-        '<a>Cancel</a>' +
+        '<a>Відмінити</a>' +
         '</div></div>'
     )
 
@@ -544,43 +544,43 @@ function drawCategory(category, length) {
     newCategory.dataset.name = category.name;
     let typeCategory;
     if (category.type === INCOME) {
-        typeCategory = "Incomes";
+        typeCategory = "Доходи";
     } else if (category.type === EXPENSE) {
-        typeCategory = "Expenses";
+        typeCategory = "Витрати";
 
     }
     newCategory.dataset.type = typeCategory;
     newCategory.onclick = function () {
-        let body = `<h3>Category info</h3>
+        let body = `<h3>Інформація про категорію</h3>
                     <form class="modal-category" id="formModalCategory">
                    <p class="modal-category-close" href="#">X</p>
-                   <a href="" class="open-merge-form">Merge</a>
+                   <a href="" class="open-merge-form">Об'єднати</a>
                         <div>
-                            <label for="name">Category name:</label>
+                            <label for="name">Категорія:</label>
                             <input type="text" class="input-modal-category" id="name" value="${newCategory.dataset.name}" >
                         </div>
                         
                         <div>
-                            <label>Category type:</label>
+                            <label>Тип категорії:</label>
                             <div class="select-category-type" id="selectCategoryType">
                                 <p>${typeCategory}</p>
                              </div>
                          </div>
                           <div>
-                            <label for="keywords">Category keywords:</label>
+                            <label for="keywords">Ключові слова:</label>
                             <div class="space-for-keywords">
                             <div class="keywords-list"></div>
                            </div>
                         </div>
                         <div class="space-button-edit-category">
-                        <button type="button" class="button-edit-category">Save</button>
+                        <button type="button" class="button-edit-category">Зберегти</button>
                         </div>
                         </form>
                         <div class="space-merge-functional" id="spaceForMergeForm">
-                        <label>Categories to merge:</label>
+                        <label>Категорії для об'єднання:</label>
                         <select class="Select-Categories-Merge" id="selectCategoryMerge">
                         </select>
-                        <button type="button" class="button-merge-category" id="buttonMergeCategory">Category merge</button>
+                        <button type="button" class="button-merge-category" id="buttonMergeCategory">Об'єднати категорії</button>
                         </div>`
         $('.modal-category-content').html(body)
         writeKeywordsOfCategory(getCategoryById(newCategory.dataset.id));
@@ -652,26 +652,26 @@ function writeKeywordsOfCategory(category) {
 }
 
 function drawModalToAddCategory() {
-    let body = `<h3>Adding a category</h3>
+    let body = `<h3>Додання категорії</h3>
                     <form class="modal-category" id="formAddCategory">
                    <p class="modal-category-close" href="#">X</p>
                         <div>
-                            <label for="newCategoryName">Category name:</label>
+                            <label for="newCategoryName">Назва категорії:</label>
                             <p class="error-name" id="errorName" style="display:none; color:red; margin: 0 auto 10px; width: 322px;"></p>
                             <input type="text" required class="input-modal-category" id="newCategoryName">
                         </div>
                         <div>
-                        <label for="newCategoryType">Choose category type:</label>
+                        <label for="newCategoryType">Виберіть до якого типу віднести категорію:</label>
                             <select class="select-modal-category" id="newCategoryType">
-                                <option value="INCOME">Income</option>
-                                <option selected value="EXPENSE">Expense</option>
+                                <option value="INCOME">Доходи</option>
+                                <option selected value="EXPENSE">Витрати</option>
                             </select>
                         </div>
                         </form>                    
                         <div class="listOfKeywords">
                         </div>
                         <div>
-                        <button type="submit" class="button-save-category">Add category</button>
+                        <button type="submit" class="button-save-category">Додати</button>
                         </div>
                     </form>`
     $('.modal-category-content').html(body)
@@ -787,7 +787,7 @@ function drawSelectCategoryForMerge(categories, id) {
         if (0 === categories.length - 1 & categories[i].id === id) {
             $('#selectCategoryMerge').append($('<option>', {
                 value: "",
-                text: "No categories to merge"
+                text: "Немає категорій для об’єднання"
             })).attr('disabled', 'disabled');
             continue;
         }
@@ -803,9 +803,9 @@ function drawSelectCategoryForMerge(categories, id) {
 }
 
 function verificationToMerge(categoryToChangeId, categoryToMergeId) {
-    let infoAboutMerge = 'Transactions and keywords from the category \"' + getCategoryById(categoryToMergeId).name +
-        '\" will be moved to category \"' + getCategoryById(categoryToChangeId).name + '\", after which the first category' +
-        ' will be deleted. '
+    let infoAboutMerge = 'Транзакції та ключові слова з категорії \"' + getCategoryById(categoryToMergeId).name +
+        '\" будуть переміщені до категорії \"' + getCategoryById(categoryToChangeId).name + '\", після чого перша категорія' +
+        ' буде видалена '
     console.log(infoAboutMerge)
     $('.information-merge').html(infoAboutMerge);
     $('.modal-verification-merge').fadeIn();
@@ -820,8 +820,8 @@ function verificationToMerge(categoryToChangeId, categoryToMergeId) {
 }
 
 function verificationToDeleteKeyword(keywordValue, keywordAccId) {
-    let infoAboutMerge = 'Keyword \"' + keywordValue +
-        '\" will be permanently deleted'
+    let infoAboutMerge = 'Ключове слово \"' + keywordValue +
+        '\" буде остаточно видалено'
     $('.information-delete-keyword').html(infoAboutMerge);
     $('.modal-verification-delete-keyword').fadeIn();
     $('.formVerificationDeleteKeyword').submit(function (e) {
@@ -913,7 +913,7 @@ sendTransactionButton.on("click", function () {
         success: function (response) {
             closeModal();
             console.log(response);
-            drawCustomToast('Transaction added successfully')
+            drawCustomToast('Транзакція успішно додана');
         },
         error: function (xhr, status, error) {
             closeModal();
