@@ -17,7 +17,7 @@ function requestBotLogin() {
             script.setAttribute("data-size", "large")
             script.setAttribute("data-onauth", "onTelegramAuth(user)")
             script.setAttribute("data-request-access", "write")
-            document.body.appendChild(script)
+            document.getElementById("login-form").appendChild(script);
         }
     })
 }

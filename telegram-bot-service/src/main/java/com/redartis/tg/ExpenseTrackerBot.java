@@ -16,6 +16,7 @@ import com.redartis.dto.transaction.TransactionMessageDto;
 import com.redartis.dto.transaction.TransactionResponseDto;
 import com.redartis.tg.constants.Command;
 import com.redartis.tg.constants.InlineKeyboardCallback;
+import com.redartis.tg.exception.InvalidVoiceDurationException;
 import com.redartis.tg.mapper.ChatMemberMapper;
 import com.redartis.tg.mapper.TransactionMapper;
 import com.redartis.tg.model.TelegramMessage;
@@ -166,65 +167,74 @@ public class ExpenseTrackerBot implements SpringLongPollingBot,
     }
 
     private void botAnswer(Message receivedMessage) {
-        Long chatId = receivedMessage.getChatId();
-        Long userId = receivedMessage.getFrom().getId();
-        Integer messageId = receivedMessage.getMessageId();
+        try {
+            Long chatId = receivedMessage.getChatId();
+            Long userId = receivedMessage.getFrom().getId();
+            Integer messageId = receivedMessage.getMessageId();
 
-        String receivedMessageText = telegramBotUtil.getReceivedMessage(receivedMessage)
-                .toLowerCase();
-        Message replyToMessage = receivedMessage.getReplyToMessage();
+            String receivedMessageText = telegramBotUtil.getReceivedMessage(receivedMessage)
+                    .toLowerCase();
+            Message replyToMessage = receivedMessage.getReplyToMessage();
 
-        long epochMilli = (long) receivedMessage.getDate() * MILLISECONDS_CONVERSION;
-        LocalDateTime date = Instant.ofEpochMilli(epochMilli)
-                .atOffset(UA_OFFSET)
-                .toLocalDateTime();
+            long epochMilli = (long) receivedMessage.getDate() * MILLISECONDS_CONVERSION;
+            LocalDateTime date = Instant.ofEpochMilli(epochMilli)
+                    .atOffset(UA_OFFSET)
+                    .toLocalDateTime();
 
-        TransactionMessageDto transactionMessageDto = TransactionMessageDto.builder()
-                .message(receivedMessageText)
-                .userId(userId)
-                .chatId(chatId)
-                .date(date)
-                .build();
+            TransactionMessageDto transactionMessageDto = TransactionMessageDto.builder()
+                    .message(receivedMessageText)
+                    .userId(userId)
+                    .chatId(chatId)
+                    .date(date)
+                    .build();
 
-        if (telegramMessageCheckerService.isNonTransactionalMessageMentioned(receivedMessageText)
-                || receivedMessageText.equals(BLANK_MESSAGE)) {
-            return;
-        }
+            if (telegramMessageCheckerService.isNonTransactionalMessage(receivedMessageText)
+                    || receivedMessageText.equals(BLANK_MESSAGE)) {
+                return;
+            }
 
-        if (replyToMessage != null) {
-            TelegramMessage message = telegramMessageService
-                    .getTelegramMessageByMessageIdAndChatId(replyToMessage.getMessageId(), chatId);
-            if (message == null) {
-                if (!userId.equals(replyToMessage.getFrom().getId())) {
-                    telegramBotUtil.sendMessage(chatId, INVALID_UPDATE_TRANSACTION_TEXT);
+            if (replyToMessage != null) {
+                TelegramMessage message = telegramMessageService
+                        .getTelegramMessageByMessageIdAndChatId(
+                                replyToMessage.getMessageId(), chatId
+                        );
+                if (message == null) {
+                    if (!userId.equals(replyToMessage.getFrom().getId())) {
+                        telegramBotUtil.sendMessage(chatId, INVALID_UPDATE_TRANSACTION_TEXT);
+                        return;
+                    }
+                    processTransaction(chatId, messageId, transactionMessageDto);
                     return;
                 }
-                processTransaction(chatId, messageId, transactionMessageDto);
-                return;
-            }
-            if (!receivedMessageText.equals(COMMAND_TO_DELETE_TRANSACTION)
-                    && !receivedMessageText.equalsIgnoreCase(replyToMessage.getText())) {
-                UUID idTransaction = message.getTransactionId();
-                updateTransaction(transactionMessageDto, idTransaction, chatId, messageId);
-                return;
-            }
-        }
-
-        switch (receivedMessageText) {
-            case "/start" -> {
-                telegramBotUtil.sendMessage(
-                        chatId,
-                        Command.START.getDescription() + webApplicationHost
-                );
-                expenseRequestService.registerSingleAccount(new AccountDataDto(chatId, userId));
-            }
-            case "/web" -> telegramBotUtil.sendMessage(chatId, webApplicationHost);
-            case COMMAND_TO_DELETE_TRANSACTION -> {
-                if (replyToMessage != null) {
-                    deleteTransaction(replyToMessage, chatId);
+                if (!receivedMessageText.equals(COMMAND_TO_DELETE_TRANSACTION)
+                        && !receivedMessageText.equalsIgnoreCase(replyToMessage.getText())) {
+                    UUID idTransaction = message.getTransactionId();
+                    updateTransaction(transactionMessageDto, idTransaction, chatId, messageId);
+                    return;
                 }
             }
-            default -> processTransaction(chatId, messageId, transactionMessageDto);
+
+            switch (receivedMessageText) {
+                case "/start" -> {
+                    telegramBotUtil.sendMessage(
+                            chatId,
+                            Command.START.getDescription().formatted(webApplicationHost)
+                    );
+                    expenseRequestService.registerSingleAccount(
+                            new AccountDataDto(chatId, userId)
+                    );
+                }
+                case "/web" -> telegramBotUtil.sendMessage(chatId, webApplicationHost);
+                case COMMAND_TO_DELETE_TRANSACTION -> {
+                    if (replyToMessage != null) {
+                        deleteTransaction(replyToMessage, chatId);
+                    }
+                }
+                default -> processTransaction(chatId, messageId, transactionMessageDto);
+            }
+        } catch (InvalidVoiceDurationException e) {
+            log.error(e.getMessage());
+            telegramBotUtil.sendMessage(receivedMessage.getChatId(), e.getMessage());
         }
     }
 

@@ -8,9 +8,9 @@ public class TransactionMapper {
     public String mapTransactionResponseToTelegramMessage(
             TransactionResponseDto transactionResponseDto) {
         return """
-                Saved to %s -> %s.
-                Amount: %s.
-                Description: %s.""".formatted(
+                Збережено до %s -> %s.
+                Ціна: %s.
+                Опис: %s.""".formatted(
                 transactionResponseDto.type(),
                 transactionResponseDto.category(),
                 transactionResponseDto.amount(),

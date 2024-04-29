@@ -15,7 +15,6 @@
 <div class="loader" id="loader">
 </div>
 
-<
 <header id="header">
     <nav class="links" style="--items: 6;">
         <a id="telegram-bot-link" target="_blank">
@@ -29,14 +28,25 @@
         <span class="line"></span>
     </nav>
 </header>
-<div class="content">
-    <div class="info">
-        <button id="downloadButton" class="get-backup-button">Завантажте резервну копію даних</button>
+
+<div class="center-screen">
+    <div>
+        <div class="content">
+            <div class="info">
+                <button id="downloadButton" class="get-backup-button">Завантажте резервну копію даних</button>
+            </div>
+        </div>
+        <div class="info">
+            <h5></h5>
+            <button id="bugReportButton" class="btn-danger">Надішліть звіт про помилку</button>
+        </div>
+
+        <div class="info">
+            <h5></h5>
+            <button id="readButton" class="btn-danger" onclick="saveFile()">Відновити дані з файлу</button>
+        </div>
+
     </div>
-</div>
-<div class="info">
-    <h5></h5>
-    <button id="bugReportButton" class="btn-danger">Надішліть звіт про помилку</button>
 </div>
 
 <div class="modal" id="bugReportModal">
@@ -59,13 +69,6 @@
     </div>
 </div>
 
-<div class="content">
-    <div class="info">
-        <p style="color:red">Відновити дані з файлу</p>
-        <button id="readButton" class="btn-danger" onclick="saveFile()">Відновити</button>
-    </div>
-</div>
-
 <div class="modal-additional-confirmation" id="modal-additional-confirmation">
     <div class="modal-additional-confirmation-content">
         <span class="close" onclick="closeModalConfirmation()">&times;</span>
@@ -78,10 +81,16 @@
                        value="Відмінити">
             </div>
             <p></p>
-            <div class="loader" >
-                <div class="lds-circle"><div></div></div>
-                <div class="lds-circle"><div></div></div>
-                <div class="lds-circle"><div></div></div>
+            <div class="loader">
+                <div class="lds-circle">
+                    <div></div>
+                </div>
+                <div class="lds-circle">
+                    <div></div>
+                </div>
+                <div class="lds-circle">
+                    <div></div>
+                </div>
             </div>
 
         </form>

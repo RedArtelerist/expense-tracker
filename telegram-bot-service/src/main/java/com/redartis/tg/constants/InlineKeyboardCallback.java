@@ -4,10 +4,10 @@ import lombok.Getter;
 
 @Getter
 public enum InlineKeyboardCallback {
-    DEFAULT("No", "default"),
-    MERGE_CATEGORIES("Transfer categories", "mergeWithCategories"),
+    DEFAULT("Ні", "default"),
+    MERGE_CATEGORIES("Перенести тіки категорії", "mergeWithCategories"),
     MERGE_CATEGORIES_AND_TRANSACTIONS(
-            "Transfer categories and transactions",
+            "Перенести категорії і транзакції",
             "mergeWithCategoriesAndTransactions"
     );
 

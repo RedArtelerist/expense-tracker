@@ -45,10 +45,10 @@ public class TransactionProcessingService {
 
     @PostConstruct
     public void init() {
-        transactionHandlers.add(new TransactionHandlerImplSumAmountAtFront());
         transactionHandlers.add(new TransactionHandlerImplSingleAmountAtFront());
-        transactionHandlers.add(new TransactionHandlerImplSumAmountAtEnd());
+        transactionHandlers.add(new TransactionHandlerImplSumAmountAtFront());
         transactionHandlers.add(new TransactionHandlerImplSingleAmountAtEnd());
+        transactionHandlers.add(new TransactionHandlerImplSumAmountAtEnd());
         transactionHandlers.add(new TransactionHandlerImplInvalidTransaction());
     }
 

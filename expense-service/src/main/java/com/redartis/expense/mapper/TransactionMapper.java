@@ -10,9 +10,9 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class TransactionMapper {
-    private static final String INCOME = "Incomes";
-    private static final String EXPENSE = "Expenses";
-    private static final String CATEGORY_UNDEFINED = "Undefined";
+    private static final String INCOME = "Доходи";
+    private static final String EXPENSE = "Витрати";
+    private static final String CATEGORY_UNDEFINED = "Невизначена";
 
     public TransactionDto mapTransactionToDto(Transaction transaction) {
         return TransactionDto.builder()

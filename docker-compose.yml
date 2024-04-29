@@ -48,7 +48,7 @@ services:
     image: postgres
     restart: unless-stopped
     ports:
-      - "5435:5432"
+      - "5436:5432"
     environment:
       POSTGRES_DB: ${EXPENSE_DB}
       POSTGRES_USER: ${EXPENSE_DB_USER}
@@ -81,11 +81,11 @@ services:
     image: postgres
     restart: unless-stopped
     ports:
-      - "5436:5432"
+      - "5435:5432"
     environment:
-      POSTGRES_DB: ${TELEGRAM_BOT_DB}
-      POSTGRES_USER: ${TELEGRAM_BOT_DB_USER}
-      POSTGRES_PASSWORD: ${TELEGRAM_BOT_DB_PASSWORD}
+      POSTGRES_DB: ${TELEGRAM_DB}
+      POSTGRES_USER: ${TELEGRAM_DB_USER}
+      POSTGRES_PASSWORD: ${TELEGRAM_DB_PASSWORD}
     extends:
       file: common-config.yml
       service: network-deploy-service

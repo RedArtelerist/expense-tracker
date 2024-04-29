@@ -1,5 +1,6 @@
 package com.redartis.tg.util;
 
+import static com.redartis.tg.util.TelegramBotAnswer.BACKUP_MESSAGE;
 import static com.redartis.tg.util.TelegramBotAnswer.MERGE_REQUEST_TEXT;
 
 import com.redartis.tg.service.MergeRequestService;
@@ -73,7 +74,7 @@ public class TelegramBotUtil {
         SendDocument sendDocument = SendDocument.builder()
                 .chatId(userChatId)
                 .document(new InputFile(file))
-                .caption("Backup file with your transactions from chat " + groupName)
+                .caption(BACKUP_MESSAGE.formatted(groupName))
                 .build();
         try {
             telegramClient.execute(sendDocument);

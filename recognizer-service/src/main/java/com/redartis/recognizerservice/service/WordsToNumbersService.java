@@ -1,18 +1,19 @@
 package com.redartis.recognizerservice.service;
 
 import jakarta.annotation.PostConstruct;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import org.springframework.stereotype.Service;
 
 @Service
 public class WordsToNumbersService {
     private static final String SPACE = " ";
-    private static final String NUMBER_CONTAINS_AT_START_OR_END_REGEX =
-            "^\\d.*|.*\\d$";
-    private static final String NON_ALPHA_NUMERIC_REGEX = "[^a-zA-Zа-яіїА-ЯІЇ0-9\"\\s]";
+    private static final String NON_ALPHA_NUMERIC_REGEX = "[^a-zA-Zа-яіїА-ЯІЇ0-9\",.\\s]";
+    private static final String AMOUNT_REGEX = "\\d+|\\d+[,.]\\d{1,2}";
 
     private final Map<String, Long> vocabulary = new HashMap<>();
     private final List<String> currencies = new ArrayList<>();
@@ -24,6 +25,7 @@ public class WordsToNumbersService {
         currencies.add("гривень");
         currencies.add("гривені");
         currencies.add("гривинь");
+        currencies.add("грн");
     }
 
     @PostConstruct
@@ -82,46 +84,52 @@ public class WordsToNumbersService {
         vocabulary.put("тищу", 1000L);
         vocabulary.put("тищі", 1000L);
         vocabulary.put("мільйон", 1000000L);
+        vocabulary.put("млн", 1000000L);
         vocabulary.put("мільйона", 1000000L);
         vocabulary.put("мільйони", 1000000L);
         vocabulary.put("мільйонів", 1000000L);
     }
 
-    public String processSpacesInNumbers(String input) {
+    public String wordsToNumbers(String text) {
+        String words = processSpacesInNumbers(text);
+        String[] splitWords = words.replaceAll(NON_ALPHA_NUMERIC_REGEX, "").split("\\s+");
+        StringBuilder message = new StringBuilder();
+
+        BigDecimal number = BigDecimal.ZERO;
+        BigDecimal prevNumber = BigDecimal.ZERO;
+
+        for (String word : splitWords) {
+            String processedWord = processWord(word);
+            if (word.matches(AMOUNT_REGEX)) {
+                BigDecimal value = new BigDecimal(word.replace(",", "."));
+                prevNumber = prevNumber.add(value);
+            } else if (vocabulary.containsKey(processedWord)) {
+                long value = vocabulary.get(processedWord);
+                if (value >= 1000) {
+                    prevNumber = Objects.equals(prevNumber, BigDecimal.ZERO)
+                            ? BigDecimal.ONE : prevNumber;
+                    number = number.add(prevNumber.multiply(BigDecimal.valueOf(value)));
+                    prevNumber = BigDecimal.ZERO;
+                } else {
+                    prevNumber = prevNumber.add(BigDecimal.valueOf(value));
+                }
+            } else if (!currencies.contains(processedWord)) {
+                message.append(processedWord).append(SPACE);
+            }
+        }
+
+        number = number.add(prevNumber);
+        if (!number.equals(BigDecimal.ZERO)) {
+            message.append(number.toPlainString());
+        }
+        return message.toString();
+    }
+
+    private String processSpacesInNumbers(String input) {
         return input.replaceAll("(?<=\\d) +(?=\\d)", "");
     }
 
-    public String wordsToNumbers(String text) {
-        String words = processSpacesInNumbers(text);
-        if (words.matches(NUMBER_CONTAINS_AT_START_OR_END_REGEX)) {
-            return words;
-        }
-
-        String[] splitWords = words.replaceAll(NON_ALPHA_NUMERIC_REGEX, "").split("\\s+");
-        StringBuilder message = new StringBuilder();
-        long number = 0;
-        long prevNumber = 0;
-
-        for (String word : splitWords) {
-            if (word.matches("\\d+")) {
-                number += prevNumber;
-                number += Long.parseLong(word);
-                prevNumber = 0;
-            } else if (vocabulary.containsKey(word.toLowerCase())) {
-                long value = vocabulary.get(word.toLowerCase());
-                if (value >= 1000) {
-                    prevNumber = prevNumber == 0 ? 1 : prevNumber;
-                    number += prevNumber * value;
-                    prevNumber = 0;
-                } else {
-                    prevNumber += value;
-                }
-            } else if (!currencies.contains(word.toLowerCase())) {
-                message.append(word).append(SPACE);
-            }
-        }
-        number += prevNumber;
-        message.append(number);
-        return message.toString();
+    private String processWord(String word) {
+        return word.toLowerCase().replaceAll("[,.]", "");
     }
 }

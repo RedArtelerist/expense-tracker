@@ -4,6 +4,7 @@ import static com.redartis.tg.util.TelegramBotAnswer.VOICE_MESSAGE_TOO_LONG;
 
 import com.redartis.dto.telegram.TelegramFileDto;
 import com.redartis.dto.telegram.VoiceMessageDto;
+import com.redartis.tg.exception.InvalidVoiceDurationException;
 import com.redartis.tg.feign.RecognizerFeign;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +22,16 @@ public class VoiceMessageProcessingService {
     private final RecognizerFeign recognizerFeign;
 
     public String processVoiceMessage(Voice voiceMessage, Long userId, Long chatId) {
-        if (voiceMessage.getDuration() > voiceMessageMaxLength) {
-            return String.format(VOICE_MESSAGE_TOO_LONG, voiceMessageMaxLength);
-        }
         TelegramFileDto telegramFileDto = telegramBotApiRequestService.getFileData(
                 voiceMessage.getFileId()
         );
+        log.info(telegramFileDto.fileUrl());
+
+        if (voiceMessage.getDuration() > voiceMessageMaxLength) {
+            throw new InvalidVoiceDurationException(
+                    String.format(VOICE_MESSAGE_TOO_LONG, voiceMessageMaxLength)
+            );
+        }
 
         return recognizerFeign.recognizeVoiceMessage(VoiceMessageDto.builder()
                 .voiceMessageBytes(telegramFileDto.voiceMessage())

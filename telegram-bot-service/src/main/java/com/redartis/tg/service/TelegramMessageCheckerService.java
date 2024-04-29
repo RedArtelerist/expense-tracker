@@ -14,7 +14,7 @@ public class TelegramMessageCheckerService {
         return isNumeric(words[0]) || isNumeric(words[words.length - 1]);
     }
 
-    public boolean isNonTransactionalMessageMentioned(String message) {
+    public boolean isNonTransactionalMessage(String message) {
         String[] words = message.split(" ");
 
         if (checkForTransactionalFormat(words)) {
