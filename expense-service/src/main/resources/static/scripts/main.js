@@ -259,19 +259,19 @@ function rejectionAndCloseModal() {
 }
 
 function addDefaultCategories() {
-    $.ajax(
-        $.ajax({
-            method: 'POST',
-            url: './categories/add-default-categories',
-            contentType: "application/json; charset=utf8",
-            success: function () {
-                window.location.reload()
-            },
-            error: function () {
-                console.log("ERROR! Something wrong happened")
-            }
-        })
-    )
+    console.log("Add default categories")
+    $.ajax({
+        method: 'POST',
+        url: './categories/add-default-categories',
+        contentType: "application/json; charset=utf8",
+        success: function () {
+            console.log("Successfully added default categories")
+            window.location.reload()
+        },
+        error: function (e) {
+            console.log("ERROR! Something wrong happened")
+        }
+    })
 }
 
 function handleDragStart(e) {

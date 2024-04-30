@@ -13,9 +13,11 @@ import com.redartis.expense.repository.TransactionRepository;
 import com.redartis.expense.util.TelegramUtils;
 import java.security.Principal;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -61,7 +63,13 @@ public class AccountService {
     public void registerSingleAccount(Principal principal) {
         Long telegramId = telegramUtils.getTelegramId(principal);
         User user = userService.getUserById(telegramId);
-        if (accountRepository.findByChatId(user.getId()).isPresent()) {
+
+        Optional<Account> existingAccount = accountRepository.findByChatId(user.getId());
+        if (existingAccount.isPresent()) {
+            if (user.getAccount() == null) {
+                user.setAccount(existingAccount.get());
+                userService.saveUser(user);
+            }
             return;
         }
         Account account = new Account(telegramId);
@@ -141,6 +149,7 @@ public class AccountService {
 
     public void updateAccountCategories(Account oldAccount, Account newAccount) {
         categoryRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
+        //keywordRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
     }
 
     public void updateAccountTransactions(Account oldAccount, Account newAccount) {
@@ -159,6 +168,7 @@ public class AccountService {
         return accountRepository.getGroupAccountsCount();
     }
 
+    //@Transactional(propagation = Propagation.REQUIRED)
     public void deletingAllTransactionsCategoriesKeywordsByAccountId(Long accountId) {
         keywordRepository.deleteAllByKeywordId_AccountId(accountId);
         transactionRepository.deleteAllByAccountId(accountId);
