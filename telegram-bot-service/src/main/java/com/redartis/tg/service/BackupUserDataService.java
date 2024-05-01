@@ -6,7 +6,8 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.redartis.dto.account.BackupUserDataDto;
 import java.io.File;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Map;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -17,28 +18,35 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 @Slf4j
 public class BackupUserDataService {
+    private static final DateTimeFormatter BACKUP_DATE_TIME_FORMAT =
+            DateTimeFormatter.ofPattern("yyyy-MM-dd.hh-mm");
+
     private final ExpenseRequestService expenseRequestService;
     private final ObjectMapper mapper = JsonMapper.builder()
             .addModule(new JavaTimeModule())
             .build();
 
-    public String createBackupFileToRemoteInChatUser(Long chatId, Long userId) {
+    public String createBackupFileToRemoteInChatUser(Long chatId, Long userId, String groupName) {
         BackupUserDataDto backupUserData = expenseRequestService.getBackup(chatId, userId);
-        return createBackupFile(userId, backupUserData);
+        return createBackupFile(groupName, backupUserData);
     }
 
-    public Map<Long, String> createBackupFilesForAllUsersInChat(Long chatId) {
+    public Map<Long, String> createBackupFilesForAllUsersInChat(Long chatId, String groupName) {
         return expenseRequestService.getBackupsForGroupAccount(chatId)
                 .entrySet()
                 .stream()
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
-                        entry -> createBackupFile(entry.getKey(), entry.getValue())
+                        entry -> createBackupFile(groupName, entry.getValue())
                 ));
     }
 
-    private String createBackupFile(Long userId, BackupUserDataDto backupUserData) {
-        String fileName = String.format("%d-%s-backup.json", userId, LocalDate.now());
+    private String createBackupFile(String groupName, BackupUserDataDto backupUserData) {
+        String fileName = String.format(
+                "%s-%s-backup.json",
+                LocalDateTime.now().format(BACKUP_DATE_TIME_FORMAT),
+                groupName
+        );
         try {
             mapper.writeValue(new File(fileName), backupUserData);
         } catch (IOException e) {

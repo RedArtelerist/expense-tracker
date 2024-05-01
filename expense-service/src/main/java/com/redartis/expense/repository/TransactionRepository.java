@@ -12,7 +12,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface TransactionRepository extends JpaRepository<Transaction, UUID> {
@@ -114,7 +113,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
             ORDER BY month""", nativeQuery = true)
     List<AnalyticsDataMonth> getTotalIncomeOutcomePerMonth(Long accountId, int year);
 
-    @Transactional
+    @Modifying
+    @Query("DELETE FROM Transaction t WHERE t.account.id = :accountId")
     void deleteAllByAccountId(Long accountId);
 
     @Modifying

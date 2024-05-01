@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface KeywordRepository extends JpaRepository<Keyword, KeywordId> {
@@ -29,6 +28,14 @@ public interface KeywordRepository extends JpaRepository<Keyword, KeywordId> {
 
     void deleteByKeywordId(KeywordId keywordId);
 
-    @Transactional
+    @Modifying
+    @Query("DELETE FROM Keyword k WHERE k.keywordId.accountId = :accountId")
     void deleteAllByKeywordId_AccountId(Long accountId);
+
+    @Modifying
+    @Query("""
+            UPDATE Keyword c SET c.keywordId.accountId = :newAccountId
+            WHERE c.keywordId.accountId = :oldAccountId""")
+    void updateAccountId(Long oldAccountId, Long newAccountId);
+
 }

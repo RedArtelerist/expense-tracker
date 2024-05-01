@@ -10,18 +10,17 @@ import com.redartis.expense.model.Transaction;
 import com.redartis.expense.model.User;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class BackupUserDataService {
     private final AccountService accountService;
     private final CategoryService categoryService;
-    private final KeywordService keywordService;
     private final TransactionService transactionService;
     private final TransactionProcessingService transactionProcessingService;
     private final CategoryMapper categoryMapper;
@@ -79,6 +78,7 @@ public class BackupUserDataService {
                 ));
     }
 
+    @Transactional
     public void writingDataFromBackupFile(BackupUserDataDto backupUserDataDto, Long telegramId) {
         var transactions = createTransactionsFromBackupFile(backupUserDataDto, telegramId);
         transactionService.saveAllTransactions(transactions);
@@ -109,7 +109,7 @@ public class BackupUserDataService {
                 .map(transactionDto -> Transaction.builder()
                         .amount(transactionDto.getAmount())
                         .message(transactionDto.getMessage())
-                        .category(getCategory(transactionDto, categories, categorySet, accountId))
+                        .category(getCategory(transactionDto, categorySet))
                         .account(account)
                         .date(transactionDto.getDate())
                         .telegramUserId(transactionDto.getTelegramUserId())
@@ -118,18 +118,9 @@ public class BackupUserDataService {
     }
 
     private Category getCategory(TransactionDto transactionDto,
-                                 List<CategoryDto> categoryDtoList,
-                                 Set<Category> categories,
-                                 Long accountId) {
+                                 Set<Category> categories) {
         String categoryName = transactionDto.getCategoryName();
-        Optional<CategoryDto> categoryDto = categoryDtoList.stream()
-                .filter(category -> categoryName.equals(category.name()))
-                .findFirst();
 
-        var category = transactionProcessingService.getMatchingCategory(categories, categoryName);
-        categoryDto.ifPresent(
-                it -> keywordService.setKeywordsFromCategoryDto(it, category, accountId)
-        );
-        return category;
+        return transactionProcessingService.getMatchingCategory(categories, categoryName);
     }
 }

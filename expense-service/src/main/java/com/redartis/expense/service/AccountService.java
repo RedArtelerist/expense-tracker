@@ -17,6 +17,7 @@ import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
@@ -29,12 +30,6 @@ public class AccountService {
     private final TransactionRepository transactionRepository;
     private final TelegramUtils telegramUtils;
     private final UserMapper userMapper;
-
-    public Account getAccountById(Long id) {
-        return accountRepository.findById(id).orElseThrow(
-                () -> new AccountNotFoundException("Account with id " + id + " does not exist")
-        );
-    }
 
     public Account getAccountByChatId(Long chatId) {
         return accountRepository.findByChatId(chatId).orElseThrow(
@@ -148,7 +143,7 @@ public class AccountService {
 
     public void updateAccountCategories(Account oldAccount, Account newAccount) {
         categoryRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
-        //keywordRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
+        keywordRepository.updateAccountId(oldAccount.getId(), newAccount.getId());
     }
 
     public void updateAccountTransactions(Account oldAccount, Account newAccount) {
@@ -159,6 +154,7 @@ public class AccountService {
         return getAccountByChatId(userId);
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Account getNewAccount(Long userId) {
         return accountRepository.findNewAccountByUserId(userId);
     }
@@ -167,10 +163,10 @@ public class AccountService {
         return accountRepository.getGroupAccountsCount();
     }
 
-    //@Transactional(propagation = Propagation.REQUIRED)
+    @Transactional
     public void deletingAllTransactionsCategoriesKeywordsByAccountId(Long accountId) {
-        keywordRepository.deleteAllByKeywordId_AccountId(accountId);
         transactionRepository.deleteAllByAccountId(accountId);
+        keywordRepository.deleteAllByKeywordId_AccountId(accountId);
         categoryRepository.deleteAllByAccountId(accountId);
     }
 

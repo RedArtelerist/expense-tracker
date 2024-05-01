@@ -12,6 +12,7 @@ import java.util.Set;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Entity
 @Table(name = "accounts")
@@ -26,14 +27,17 @@ public class Account {
     private Long chatId;
 
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToMany(mappedBy = "account")
-    private Set<Category> categories = new HashSet<>();
+    private Set<Category> categories;
 
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToMany(mappedBy = "account")
     private Set<User> users = new HashSet<>();
 
     @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @OneToMany(mappedBy = "account")
     private Set<Transaction> transactions;
 

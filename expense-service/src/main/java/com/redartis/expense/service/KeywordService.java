@@ -1,13 +1,10 @@
 package com.redartis.expense.service;
 
-import com.redartis.dto.category.CategoryDto;
-import com.redartis.expense.model.Account;
 import com.redartis.expense.model.Category;
 import com.redartis.expense.model.Keyword;
 import com.redartis.expense.model.KeywordId;
 import com.redartis.expense.model.Transaction;
 import com.redartis.expense.repository.KeywordRepository;
-import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -46,20 +43,5 @@ public class KeywordService {
         Transaction transaction = transactionService.getTransactionByIdWithAccount(transactionId);
         var keywordId = new KeywordId(transaction.getMessage(), transaction.getAccount().getId());
         keywordRepository.removeCategoryId(keywordId);
-    }
-
-    public List<Keyword> findAllByAccount(Account account) {
-        return keywordRepository.findAllByAccount(account.getId());
-    }
-
-    public void setKeywordsFromCategoryDto(
-            CategoryDto categoryDto,
-            Category category,
-            Long accountId) {
-        List<Keyword> keywords = categoryDto.keywords()
-                .stream()
-                .map(k -> new Keyword(new KeywordId(k.name(), accountId), category))
-                .toList();
-        keywordRepository.saveAll(keywords);
     }
 }

@@ -92,7 +92,8 @@ public class ExpenseTrackerBot implements SpringLongPollingBot,
                 if (!remoteUser.getIsBot()) {
                     var backupFileName = backupUserDataService.createBackupFileToRemoteInChatUser(
                             chatId,
-                            remoteUser.getId()
+                            remoteUser.getId(),
+                            groupName
                     );
                     telegramBotUtil.sendBuckUpFile(
                             remoteUser.getId().toString(),
@@ -108,7 +109,7 @@ public class ExpenseTrackerBot implements SpringLongPollingBot,
                             .formatted(remoteUser.getId(), chatId));
                 } else {
                     var backupUsersMap = backupUserDataService
-                            .createBackupFilesForAllUsersInChat(chatId);
+                            .createBackupFilesForAllUsersInChat(chatId, groupName);
                     backupUsersMap.forEach((userId, backup) -> telegramBotUtil.sendBuckUpFile(
                             userId.toString(),
                             backup, groupName)

@@ -10,7 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public interface CategoryRepository extends JpaRepository<Category, Long> {
@@ -32,7 +31,8 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
     @Query("SELECT c FROM Category c WHERE c.account.id = :accountId AND c.name = :name")
     Category findCategoryByNameAndAccountId(Long accountId, String name);
 
-    @Transactional
+    @Modifying
+    @Query("DELETE FROM Category c WHERE c.account.id = :accountId")
     void deleteAllByAccountId(Long accountId);
 
     @Query("""
