@@ -7,6 +7,7 @@ import lombok.Builder;
 
 @Builder
 public record BackupUserDataDto(
+        String username,
         List<TransactionDto> transactions,
         List<CategoryDto> categories) {
 }

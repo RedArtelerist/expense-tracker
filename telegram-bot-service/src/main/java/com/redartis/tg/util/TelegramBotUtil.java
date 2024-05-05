@@ -69,10 +69,10 @@ public class TelegramBotUtil {
         telegramClient.execute(message);
     }
 
-    public void sendBuckUpFile(String userChatId, String fileName, String groupName) {
+    public void sendBuckUpFile(String userId, String fileName, String groupName) {
         File file = new File(fileName);
         SendDocument sendDocument = SendDocument.builder()
-                .chatId(userChatId)
+                .chatId(userId)
                 .document(new InputFile(file))
                 .caption(BACKUP_MESSAGE.formatted(groupName))
                 .build();

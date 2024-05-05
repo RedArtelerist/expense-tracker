@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 public class BackupUserDataService {
+    private final UserService userService;
     private final AccountService accountService;
     private final CategoryService categoryService;
     private final TransactionService transactionService;
@@ -28,10 +29,6 @@ public class BackupUserDataService {
     public BackupUserDataDto createBackupUserData(Long telegramId) {
         Long chatId = accountService.getAccountByUserId(telegramId).getChatId();
         return createBackup(chatId);
-    }
-
-    public BackupUserDataDto createBackupRemovedUserData(Long chatId, Long userId) {
-        return createBackupForGroupMember(chatId, userId);
     }
 
     public BackupUserDataDto createBackup(Long chatId) {
@@ -50,6 +47,7 @@ public class BackupUserDataService {
                 .findTransactionsForAccountByChatIdAndUserId(chatId, userId);
 
         return BackupUserDataDto.builder()
+                .username(userService.getUserById(userId).getUsername())
                 .categories(categories)
                 .transactions(transactions)
                 .build();
@@ -57,12 +55,13 @@ public class BackupUserDataService {
 
     private BackupUserDataDto createBackupForGroupMember(
             Long chatId,
-            Long userId,
+            User user,
             List<CategoryDto> categories) {
         var transactions = transactionService
-                .findTransactionsForAccountByChatIdAndUserId(chatId, userId);
+                .findTransactionsForAccountByChatIdAndUserId(chatId, user.getId());
 
         return BackupUserDataDto.builder()
+                .username(user.getUsername())
                 .categories(categories)
                 .transactions(transactions)
                 .build();
@@ -74,7 +73,7 @@ public class BackupUserDataService {
         return account.getUsers().stream()
                 .collect(Collectors.toMap(
                         User::getId,
-                        user -> createBackupForGroupMember(chatId, user.getId(), categories)
+                        user -> createBackupForGroupMember(chatId, user, categories)
                 ));
     }
 

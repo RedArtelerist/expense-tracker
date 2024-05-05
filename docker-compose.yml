@@ -76,16 +76,31 @@ services:
       SPRING_APPLICATION_NAME: "expense-service"
       SPRING_DATASOURCE_URL: jdbc:postgresql://expense-tracker-db:5432/${EXPENSE_DB}
 
-  telegram-bot-db:
-    container_name: telegram-bot-db
-    image: postgres
+  telegram-bot-mongodb:
+    container_name: telegram-bot-mongodb
+    image: mongo
     restart: unless-stopped
     ports:
-      - "5435:5432"
+      - "7017:27017"
     environment:
-      POSTGRES_DB: ${TELEGRAM_DB}
-      POSTGRES_USER: ${TELEGRAM_DB_USER}
-      POSTGRES_PASSWORD: ${TELEGRAM_DB_PASSWORD}
+      MONGO_INITDB_ROOT_USERNAME: ${MONGODB_USER}
+      MONGO_INITDB_ROOT_PASSWORD: ${MONGODB_PASSWORD}
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
+  mongo-express:
+    image: mongo-express
+    container_name: mongo-express
+    restart: unless-stopped
+    ports:
+      - "7018:8081"
+    depends_on:
+      - telegram-bot-mongodb
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGODB_USER}
+      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_PASSWORD}
+      ME_CONFIG_MONGODB_URL: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@telegram-bot-mongodb:27017/
     extends:
       file: common-config.yml
       service: network-deploy-service
@@ -98,7 +113,7 @@ services:
       dockerfile: telegram-bot-service/Dockerfile
     restart: on-failure
     depends_on:
-      telegram-bot-db:
+      telegram-bot-mongodb:
         condition: service_started
     ports:
       - "8200:8200"
@@ -107,7 +122,7 @@ services:
       service: microservice-eureka-config
     environment:
       SPRING_APPLICATION_NAME: "telegram-bot-service"
-      SPRING_DATASOURCE_URL: jdbc:postgresql://telegram-bot-db:5432/${TELEGRAM_BOT_DB}
+      SPRING_DATA_MONGODB_URI: "mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@telegram-bot-mongodb:27017/${MONGODB_DATABASE}?authSource=admin"
 
   recognizer-service:
     image: recognizer-service:v0.0.1

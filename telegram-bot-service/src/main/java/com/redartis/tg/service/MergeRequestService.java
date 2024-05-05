@@ -4,8 +4,11 @@ import com.redartis.tg.mapper.MergeRequestMapper;
 import com.redartis.tg.model.MergeRequest;
 import com.redartis.tg.repository.MergeRequestRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.telegram.telegrambots.meta.api.objects.message.Message;
 
 @Service
@@ -13,6 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.message.Message;
 public class MergeRequestService {
     private final MergeRequestRepository mergeRequestRepository;
     private final MergeRequestMapper mergeRequestMapper;
+    private final MongoTemplate mongoTemplate;
 
     public void saveMergeRequestMessage(Message message) {
         saveMergeRequest(mergeRequestMapper.mapMergeRequestMessageToMergeRequest(message));
@@ -26,9 +30,10 @@ public class MergeRequestService {
         return mergeRequestRepository.getMergeRequestByChatId(chatId);
     }
 
-    @Transactional
     public void updateMergeRequestCompletionByChatId(Long chatId) {
-        mergeRequestRepository.updateMergeRequestCompletionByChatId(chatId);
+        Query query = new Query().addCriteria(Criteria.where("chatId").is(chatId));
+        Update update = new Update().set("completed", true);
+        mongoTemplate.updateFirst(query, update, MergeRequest.class);
     }
 
     public void deleteMergeRequestsByChatId(Long chatId) {

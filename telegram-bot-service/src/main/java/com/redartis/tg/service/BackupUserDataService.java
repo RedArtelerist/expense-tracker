@@ -43,8 +43,9 @@ public class BackupUserDataService {
 
     private String createBackupFile(String groupName, BackupUserDataDto backupUserData) {
         String fileName = String.format(
-                "%s-%s-backup.json",
+                "%s-%s-%s-backup.json",
                 LocalDateTime.now().format(BACKUP_DATE_TIME_FORMAT),
+                backupUserData.username(),
                 groupName
         );
         try {

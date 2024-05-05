@@ -35,7 +35,7 @@ public class SettingsController {
     @GetMapping("/backup/{chatId}/{userId}")
     public BackupUserDataDto getBackupDataFromRemovedUser(@PathVariable Long chatId,
                                                           @PathVariable Long userId) {
-        return backupUserDataService.createBackupRemovedUserData(chatId, userId);
+        return backupUserDataService.createBackupForGroupMember(chatId, userId);
     }
 
     @OnlyServiceUse

@@ -14,7 +14,6 @@ import com.redartis.expense.util.TelegramUtils;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -129,6 +128,7 @@ public class AccountService {
         Account oldAccount = getOldAccount(userId);
         Account newAccount = getNewAccount(userId);
 
+        transactionRepository.deleteAllByAccountId(oldAccount.getId());
         updateAccountCategories(oldAccount, newAccount);
     }
 
@@ -173,14 +173,13 @@ public class AccountService {
     @Transactional
     public void deleteGroupAccount(Long chatId) {
         Account account = getAccountByChatIdWithUsers(chatId);
-
-        Set<User> users = account.getUsers();
-        users.forEach(user -> user.setAccount(
-                accountRepository.findByChatId(user.getId()).orElse(null)
-        ));
-        users.forEach(userService::saveUser);
-
         deletingAllTransactionsCategoriesKeywordsByAccountId(account.getId());
+
+        account.getUsers().forEach(user -> {
+            user.setAccount(accountRepository.findByChatId(user.getId()).orElse(null));
+            userService.saveUser(user);
+        });
+
         accountRepository.delete(account);
     }
 }
