@@ -1,4 +1,4 @@
-package com.redartis.expense.security.dto;
+package com.redartis.dto.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
@@ -18,5 +18,5 @@ public record TelegramAuthRequest(
         @JsonProperty("auth_date")
         String authDate,
         @JsonProperty("hash")
-        String hash
-) {}
+        String hash) {
+}

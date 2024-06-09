@@ -12,8 +12,10 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>api-gateway</module>
         <module>config-server</module>
         <module>discovery-service</module>
+        <module>authentication-service</module>
         <module>expense-service</module>
         <module>recognizer-service</module>
         <module>telegram-bot-service</module>

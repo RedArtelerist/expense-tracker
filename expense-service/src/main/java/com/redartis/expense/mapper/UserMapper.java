@@ -1,8 +1,9 @@
 package com.redartis.expense.mapper;
 
+import com.redartis.dto.auth.TelegramAuthRequest;
+import com.redartis.dto.auth.UserDto;
 import com.redartis.dto.telegram.ChatMemberDto;
 import com.redartis.expense.model.User;
-import com.redartis.expense.security.dto.TelegramAuthRequest;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -24,6 +25,14 @@ public class UserMapper {
                 .lastName(telegramAuthRequest.lastName())
                 .photoUrl(telegramAuthRequest.photoUrl())
                 .authDate(telegramAuthRequest.authDate())
+                .build();
+    }
+
+    public UserDto mapUserToUserDto(User user) {
+        return UserDto.builder()
+                .id(user.getId())
+                .username(user.getUsername())
+                .firstName(user.getFirstName())
                 .build();
     }
 }

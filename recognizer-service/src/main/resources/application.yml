@@ -13,3 +13,33 @@ spring:
       httpclient:
         hc5:
           enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: true
+
+endpoints:
+  shutdown:
+    enabled: true
+
+info:
+  app:
+    name: "recognizer-service"
+    description: "Recognizer Service Application"
+    version: "1.0.0"

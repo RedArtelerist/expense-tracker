@@ -1,11 +1,12 @@
 package com.redartis.expense.service;
 
 import com.redartis.dto.account.AccountDataDto;
+import com.redartis.dto.auth.TelegramAuthRequest;
+import com.redartis.dto.auth.UserDto;
 import com.redartis.expense.exception.UserNotFoundException;
 import com.redartis.expense.mapper.UserMapper;
 import com.redartis.expense.model.User;
 import com.redartis.expense.repository.UserRepository;
-import com.redartis.expense.security.dto.TelegramAuthRequest;
 import java.util.List;
 import java.util.Objects;
 import lombok.RequiredArgsConstructor;
@@ -40,7 +41,7 @@ public class UserService {
     }
 
     @Transactional
-    public void saveUser(TelegramAuthRequest telegramAuthRequest) {
+    public UserDto saveUser(TelegramAuthRequest telegramAuthRequest) {
         try {
             User user = getUserById(telegramAuthRequest.id());
             if (!(Objects.equals(user.getUsername(), telegramAuthRequest.username())
@@ -54,8 +55,10 @@ public class UserService {
                         telegramAuthRequest.photoUrl(),
                         telegramAuthRequest.authDate());
             }
+            return userMapper.mapUserToUserDto(user);
         } catch (UserNotFoundException e) {
-            userRepository.save(userMapper.mapTelegramAuthToUser(telegramAuthRequest));
+            User user = userRepository.save(userMapper.mapTelegramAuthToUser(telegramAuthRequest));
+            return userMapper.mapUserToUserDto(user);
         }
     }
 

@@ -1,6 +1,6 @@
 package com.redartis.expense.security;
 
-import com.redartis.expense.model.User;
+import com.redartis.dto.auth.UserDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -27,55 +27,44 @@ public class JwtProvider {
     @Value("${jwt.token.lifetime-in-days}")
     private int tokenLifeTimeInDays;
 
-    private final SecretKey jwtAccessSecret;
-    private final SecretKey jwtRefreshSecret;
+    private final SecretKey jwtSecret;
 
-    public JwtProvider(@Value("${jwt.secret.access}") String jwtAccessSecret,
-                       @Value("${jwt.secret.refresh}") String jwtRefreshSecret) {
-        this.jwtAccessSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtAccessSecret));
-        this.jwtRefreshSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtRefreshSecret));
+    public JwtProvider(@Value("${jwt.secret.access}") String jwtSecret) {
+        this.jwtSecret = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
     }
 
-    public String generateAccessToken(@NonNull User user) {
+    public String generateAccessToken(@NonNull UserDto user) {
         Instant accessExpirationInstant = LocalDateTime.now()
                 .plusHours(tokenLifeTimeInHours)
                 .atZone(ZoneId.systemDefault())
                 .toInstant();
 
         return Jwts.builder()
-                .subject(user.getId().toString())
+                .subject(user.id().toString())
                 .expiration(Date.from(accessExpirationInstant))
-                .claim("firstName", user.getFirstName())
-                .claim("username", user.getUsername())
-                .signWith(jwtAccessSecret)
+                .claim("firstName", user.firstName())
+                .claim("username", user.username())
+                .signWith(jwtSecret)
                 .compact();
     }
 
-    public String generateRefreshToken(@NonNull User user) {
+    public String generateRefreshToken(@NonNull UserDto user) {
         final Instant refreshExpirationInstant = LocalDateTime.now()
                 .plusDays(tokenLifeTimeInDays)
                 .atZone(ZoneId.systemDefault())
                 .toInstant();
 
         return Jwts.builder()
-                .subject(user.getId().toString())
+                .subject(user.id().toString())
                 .expiration(Date.from(refreshExpirationInstant))
-                .signWith(jwtRefreshSecret)
+                .signWith(jwtSecret)
                 .compact();
     }
 
-    public boolean validateAccessToken(@NonNull String accessToken) {
-        return validateToken(accessToken, jwtAccessSecret);
-    }
-
-    public boolean validateRefreshToken(@NonNull String refreshToken) {
-        return validateToken(refreshToken, jwtRefreshSecret);
-    }
-
-    private boolean validateToken(@NonNull String token, @NonNull SecretKey secret) {
+    public boolean validateToken(@NonNull String token) {
         try {
             Jwts.parser()
-                    .verifyWith(secret)
+                    .verifyWith(jwtSecret)
                     .build()
                     .parseSignedClaims(token);
             return true;
@@ -93,17 +82,9 @@ public class JwtProvider {
         return false;
     }
 
-    public Claims getAccessClaims(@NonNull String token) {
-        return getClaims(token, jwtAccessSecret);
-    }
-
-    public Claims getRefreshClaims(@NonNull String token) {
-        return getClaims(token, jwtRefreshSecret);
-    }
-
-    private Claims getClaims(@NonNull String token, @NonNull SecretKey secret) {
+    public Claims getClaims(@NonNull String token) {
         return Jwts.parser()
-                .verifyWith(secret)
+                .verifyWith(jwtSecret)
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

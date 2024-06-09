@@ -1,0 +1,27 @@
+body, html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+}
+
+.centered-form {
+    width: 300px;
+    padding: 20px;
+    border-radius: 50px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    background-color: white;
+    text-align: center;
+}
+
+.form-title {
+    font-size: 18px;
+    color: #0088cc;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #0088cc;
+    padding-bottom: 10px;
+    font-weight: 600;
+}

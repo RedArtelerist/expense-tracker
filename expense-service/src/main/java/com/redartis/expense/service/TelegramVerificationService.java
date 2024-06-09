@@ -1,6 +1,6 @@
 package com.redartis.expense.service;
 
-import com.redartis.expense.security.dto.TelegramAuthRequest;
+import com.redartis.dto.auth.TelegramAuthRequest;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.MessageDigest;

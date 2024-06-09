@@ -1,6 +1,6 @@
 package com.redartis.recognizerservice.feign;
 
-import com.redartis.recognizerservice.dto.WhisperResponseDto;
+import com.redartis.recognizerservice.dto.whisper.WhisperResponseDto;
 import java.io.File;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestHeader;

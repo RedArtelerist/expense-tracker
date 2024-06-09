@@ -8,3 +8,33 @@ spring:
     active: ${SPRING_APPLICATION_PROFILE:dev}
   config:
     import: optional:configserver:http://${CONFIG_SERVER_HOST:localhost}:${CONFIG_SERVER_PORT:8888}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  health:
+    readiness-state:
+      enabled: true
+    liveness-state:
+      enabled: true
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      probes:
+        enabled: true
+  info:
+    env:
+      enabled: true
+
+endpoints:
+  shutdown:
+    enabled: true
+
+info:
+  app:
+    name: "expense-service"
+    description: "Expense Service Application"
+    version: "1.0.0"

@@ -30,13 +30,14 @@ public class SecurityConfig {
                                         "/auth/**",
                                         "/login/**",
                                         "/error",
-                                        "/actuator/health", "/actuator/prometheus"
+                                        "/actuator/**"
                                 )
                                 .permitAll()
                                 .anyRequest()
                                 .authenticated()
                 )
-                .formLogin(httpFormLogin -> httpFormLogin.loginPage("/login"))
+                //.formLogin(httpFormLogin -> httpFormLogin.loginPage("/login"))
+                .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterAfter(
                         internalKeyAuthenticationFilter,

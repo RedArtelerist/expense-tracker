@@ -29,7 +29,7 @@ public class RequestHeaderInterceptor implements HandlerInterceptor {
                 String internalKeyRequest = request.getHeader(HEADER_NAME);
 
                 if (internalKeyRequest == null || !internalKeyRequest.equals(secretKey)) {
-                    throw new InternalKeyNotFoundException("Доступ к странице запрещен");
+                    throw new InternalKeyNotFoundException("Forbidden access to the resource");
                 }
             }
         }

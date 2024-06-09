@@ -30,7 +30,7 @@ services:
       dockerfile: discovery-service/Dockerfile
     restart: unless-stopped
     healthcheck:
-      test: "curl --fail --silent localhost:8761/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:${EUREKA_SERVICE_DOCKER_PORT}/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
@@ -66,6 +66,12 @@ services:
     ports:
       - "8100:8100"
     restart: on-failure
+    healthcheck:
+      test: "curl --fail --silent localhost:8100/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     depends_on:
       expense-tracker-db:
         condition: service_started
@@ -98,8 +104,8 @@ services:
     depends_on:
       - telegram-bot-mongodb
     environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ${MONGODB_USER}
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ${MONGODB_PASSWORD}
+      ME_CONFIG_BASICAUTH_USERNAME: ${MONGODB_EXPRESS_USER}
+      ME_CONFIG_BASICAUTH_PASSWORD: ${MONGODB_EXPRESS_PASSWORD}
       ME_CONFIG_MONGODB_URL: mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@telegram-bot-mongodb:27017/
     extends:
       file: common-config.yml
@@ -112,6 +118,12 @@ services:
       context: .
       dockerfile: telegram-bot-service/Dockerfile
     restart: on-failure
+    healthcheck:
+      test: "curl --fail --silent localhost:8200/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     depends_on:
       telegram-bot-mongodb:
         condition: service_started
@@ -131,6 +143,12 @@ services:
       context: .
       dockerfile: recognizer-service/Dockerfile
     restart: on-failure
+    healthcheck:
+      test: "curl --fail --silent localhost:8300/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
     ports:
       - "8300:8300"
     extends:
@@ -138,6 +156,25 @@ services:
       service: microservice-eureka-config
     environment:
       SPRING_APPLICATION_NAME: "recognizer-service"
+
+  gateway-server:
+    image: gateway-server:v0.0.1
+    container_name: api-gateway-server
+    build:
+      context: .
+      dockerfile: api-gateway/Dockerfile
+    ports:
+      - "8072:8072"
+    depends_on:
+      expense-service:
+        condition: service_healthy
+      telegram-bot-service:
+        condition: service_healthy
+    environment:
+      SPRING_APPLICATION_NAME: "api-gateway"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
 
 networks:
   expense-network:

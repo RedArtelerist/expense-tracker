@@ -32,7 +32,7 @@ public class AdminPageFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
         String token = authenticationFilter.getTokenFromRequest(request);
-        Claims claims = jwtProvider.getAccessClaims(token);
+        Claims claims = jwtProvider.getClaims(token);
         String username = claims.get(USERNAME_CLAIM, String.class);
 
         for (String allowedUsername : allowedUsers) {

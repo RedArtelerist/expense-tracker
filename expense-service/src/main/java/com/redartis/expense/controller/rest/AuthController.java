@@ -1,7 +1,7 @@
 package com.redartis.expense.controller.rest;
 
+import com.redartis.dto.auth.TelegramAuthRequest;
 import com.redartis.expense.security.dto.JwtResponse;
-import com.redartis.expense.security.dto.TelegramAuthRequest;
 import com.redartis.expense.service.AuthenticationService;
 import com.redartis.expense.util.CookieUtils;
 import jakarta.servlet.http.HttpServletResponse;

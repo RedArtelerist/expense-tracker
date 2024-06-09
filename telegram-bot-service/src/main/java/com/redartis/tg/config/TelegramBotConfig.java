@@ -7,7 +7,7 @@ import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient;
 import org.telegram.telegrambots.meta.generics.TelegramClient;
 
 @Configuration
-public class TelegramConfig {
+public class TelegramBotConfig {
     @Value("${bot.token}")
     private String botToken;
 
