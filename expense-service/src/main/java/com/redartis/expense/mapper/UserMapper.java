@@ -1,8 +1,8 @@
 package com.redartis.expense.mapper;
 
 import com.redartis.dto.auth.TelegramAuthRequest;
-import com.redartis.dto.auth.UserDto;
 import com.redartis.dto.telegram.ChatMemberDto;
+import com.redartis.dto.user.UserDto;
 import com.redartis.expense.model.User;
 import org.springframework.stereotype.Component;
 

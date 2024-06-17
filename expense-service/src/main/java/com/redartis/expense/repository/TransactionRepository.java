@@ -44,7 +44,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, UUID> 
 
     @Query("""
             SELECT t FROM Transaction t
-            WHERE t.account.id = :accountId AND t.category.id is null""")
+            WHERE t.account.id = :accountId AND t.category.id is null
+            ORDER BY t.date DESC""")
     List<Transaction> findAllWithoutCategoriesByAccountId(Long accountId);
 
     @Query("""

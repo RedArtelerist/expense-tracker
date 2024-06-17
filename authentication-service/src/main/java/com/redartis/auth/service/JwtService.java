@@ -1,6 +1,6 @@
 package com.redartis.auth.service;
 
-import com.redartis.dto.auth.UserDto;
+import com.redartis.dto.user.UserDto;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

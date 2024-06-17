@@ -1,10 +1,11 @@
 package com.redartis.expense.controller.rest;
 
 import com.redartis.dto.auth.TelegramAuthRequest;
-import com.redartis.dto.auth.UserDto;
+import com.redartis.dto.user.UserDto;
 import com.redartis.expense.annotations.OnlyServiceUse;
 import com.redartis.expense.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,5 +21,10 @@ public class UserController {
     @PostMapping("/save")
     public UserDto saveTelegramUserData(@RequestBody TelegramAuthRequest authRequest) {
         return userService.saveUser(authRequest);
+    }
+
+    @GetMapping("/count")
+    public long getUsersCount() {
+        return userService.getUsersCount();
     }
 }

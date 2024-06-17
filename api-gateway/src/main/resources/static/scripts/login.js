@@ -29,12 +29,16 @@ function onTelegramAuth(user) {
         url: '/auth/login',
         data: userJson,
         contentType: "application/json; charset=utf8",
-        success: function () {
+        success: function (response) {
             console.log("Successfully authenticated")
-            location.href = "http://" + location.hostname + "/";
+            console.log(response.accessToken);
+            localStorage.setItem('accessToken', response.accessToken);
+            localStorage.setItem('refreshToken', response.refreshToken);
+
+            location.href = "http://" + location.hostname + "/tracker";
         },
         error: function () {
-            console.log("ERROR! Something wrong happened")
+            console.log("Authentication was failed")
         }
     })
 }

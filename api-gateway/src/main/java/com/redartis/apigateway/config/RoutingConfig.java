@@ -15,9 +15,8 @@ public class RoutingConfig {
     public RouteLocator routeLocatorConfig(RouteLocatorBuilder routeLocatorBuilder) {
         return routeLocatorBuilder.routes()
                 .route(p -> p.path("/auth/**")
-                        .filters(f -> f.rewritePath("/auth/(?<segment>.*)", "/${segment}")
-                                .filter(authenticationFilter)
-                        ).uri("lb://AUTHENTICATION-SERVICE"))
+                        .filters(f -> f.filter(authenticationFilter))
+                        .uri("lb://AUTHENTICATION-SERVICE"))
                 .route(p -> p.path("/tracker/**")
                         .filters(f -> f.rewritePath("/tracker/(?<segment>.*)", "/${segment}")
                                 .filter(authenticationFilter)

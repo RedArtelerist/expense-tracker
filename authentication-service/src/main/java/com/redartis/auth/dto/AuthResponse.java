@@ -1,4 +1,4 @@
-package com.redartis.auth.model;
+package com.redartis.auth.dto;
 
 import lombok.Builder;
 

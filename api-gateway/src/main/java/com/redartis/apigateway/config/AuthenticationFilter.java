@@ -24,7 +24,6 @@ public class AuthenticationFilter implements GatewayFilter {
     );
 
     private final JwtUtil jwtUtil;
-
     private final Predicate<ServerHttpRequest> isSecured =
             request -> openApiEndpoints.stream()
                     .noneMatch(uri -> request.getURI().getPath().contains(uri));

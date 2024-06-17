@@ -57,6 +57,27 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
+  authentication-service:
+    image: authentication-service:v0.0.1
+    container_name: auth-service
+    build:
+      context: .
+      dockerfile: authentication-service/Dockerfile
+    ports:
+      - "8400:8400"
+    restart: on-failure
+    healthcheck:
+      test: "curl --fail --silent localhost:8400/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
+    environment:
+      SPRING_APPLICATION_NAME: "authentication-service"
+
   expense-service:
     image: expense-service:v0.0.1
     container_name: expense-service
@@ -166,9 +187,9 @@ services:
     ports:
       - "8072:8072"
     depends_on:
-      expense-service:
+      authentication-service:
         condition: service_healthy
-      telegram-bot-service:
+      expense-service:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "api-gateway"

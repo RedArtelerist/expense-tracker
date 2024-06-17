@@ -1,8 +1,8 @@
 package com.redartis.auth.controller;
 
-import com.redartis.auth.model.AuthResponse;
+import com.redartis.auth.dto.AuthResponse;
+import com.redartis.auth.dto.TelegramAuthRequest;
 import com.redartis.auth.service.AuthService;
-import com.redartis.dto.auth.TelegramAuthRequest;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import lombok.RequiredArgsConstructor;

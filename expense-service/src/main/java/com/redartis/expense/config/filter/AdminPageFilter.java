@@ -1,6 +1,6 @@
 package com.redartis.expense.config.filter;
 
-import com.redartis.expense.security.JwtProvider;
+import com.redartis.expense.security.JwtService;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -20,8 +20,8 @@ public class AdminPageFilter extends OncePerRequestFilter {
     private static final String ADMIN_PATH = "/admin";
     private static final String USERNAME_CLAIM = "username";
 
-    private final JwtAuthenticationFilter authenticationFilter;
-    private final JwtProvider jwtProvider;
+    private final AuthenticationFilter authenticationFilter;
+    private final JwtService jwtService;
 
     @Value("${admin.allowed_users}")
     private String[] allowedUsers;
@@ -32,7 +32,7 @@ public class AdminPageFilter extends OncePerRequestFilter {
             HttpServletResponse response,
             FilterChain filterChain) throws ServletException, IOException {
         String token = authenticationFilter.getTokenFromRequest(request);
-        Claims claims = jwtProvider.getClaims(token);
+        Claims claims = jwtService.getClaims(token);
         String username = claims.get(USERNAME_CLAIM, String.class);
 
         for (String allowedUsername : allowedUsers) {

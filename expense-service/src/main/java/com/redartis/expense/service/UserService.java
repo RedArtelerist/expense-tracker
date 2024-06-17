@@ -2,7 +2,7 @@ package com.redartis.expense.service;
 
 import com.redartis.dto.account.AccountDataDto;
 import com.redartis.dto.auth.TelegramAuthRequest;
-import com.redartis.dto.auth.UserDto;
+import com.redartis.dto.user.UserDto;
 import com.redartis.expense.exception.UserNotFoundException;
 import com.redartis.expense.mapper.UserMapper;
 import com.redartis.expense.model.User;
