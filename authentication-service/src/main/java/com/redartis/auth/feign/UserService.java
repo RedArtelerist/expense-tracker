@@ -1,6 +1,6 @@
 package com.redartis.auth.feign;
 
-import com.redartis.auth.dto.TelegramAuthRequest;
+import com.redartis.dto.auth.TelegramAuthRequest;
 import com.redartis.dto.user.UserDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
