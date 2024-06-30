@@ -2,20 +2,20 @@ version: '3.8'
 
 services:
   config-server:
-    image: config-server:v0.0.1
+    image: redartis/et-config-server:v0.0.1
     container_name: config-server
     build:
       context: .
       dockerfile: config-server/Dockerfile
     restart: unless-stopped
     healthcheck:
-      test: "curl --fail --silent localhost:${CONFIG_SERVER_DOCKER_PORT}/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8888/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 10s
     ports:
-      - "${CONFIG_SERVER_LOCAL_PORT}:${CONFIG_SERVER_DOCKER_PORT}"
+      - "8888:8888"
     environment:
       CONFIG_SERVER_GIT_REPOSITORY_URI: ${CONFIG_SERVER_GIT_REPOSITORY_URI}
     extends:
@@ -23,20 +23,20 @@ services:
       service: microservice-base-config
 
   eureka-service:
-    image: eureka-service:v0.0.1
+    image: redartis/et-eureka-service:v0.0.1
     container_name: eureka-service
     build:
       context: .
       dockerfile: discovery-service/Dockerfile
     restart: unless-stopped
     healthcheck:
-      test: "curl --fail --silent localhost:${EUREKA_SERVICE_DOCKER_PORT}/actuator/health/readiness | grep UP || exit 1"
+      test: "curl --fail --silent localhost:8761/actuator/health/readiness | grep UP || exit 1"
       interval: 10s
       timeout: 5s
       retries: 10
       start_period: 10s
     ports:
-      - "${EUREKA_SERVICE_LOCAL_PORT}:${EUREKA_SERVICE_DOCKER_PORT}"
+      - "8761:8761"
     extends:
       file: common-config.yml
       service: microservice-config-server-config
@@ -58,7 +58,7 @@ services:
       service: network-deploy-service
 
   authentication-service:
-    image: authentication-service:v0.0.1
+    image: redartis/et-authentication-service:v0.0.1
     container_name: auth-service
     build:
       context: .
@@ -79,7 +79,7 @@ services:
       SPRING_APPLICATION_NAME: "authentication-service"
 
   expense-service:
-    image: expense-service:v0.0.1
+    image: redartis/expense-service:v0.0.1
     container_name: expense-service
     build:
       context: .
@@ -133,7 +133,7 @@ services:
       service: network-deploy-service
 
   telegram-bot-service:
-    image: telegram-bot-service:v0.0.1
+    image: redartis/et-telegram-bot-service:v0.0.1
     container_name: telegram-bot-service
     build:
       context: .
@@ -158,7 +158,7 @@ services:
       SPRING_DATA_MONGODB_URI: "mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@telegram-bot-mongodb:27017/${MONGODB_DATABASE}?authSource=admin"
 
   recognizer-service:
-    image: recognizer-service:v0.0.1
+    image: redartis/et-recognizer-service:v0.0.1
     container_name: recognizer-service
     build:
       context: .
@@ -179,7 +179,7 @@ services:
       SPRING_APPLICATION_NAME: "recognizer-service"
 
   gateway-server:
-    image: gateway-server:v0.0.1
+    image: redartis/et-api-gateway-server:v0.0.1
     container_name: api-gateway-server
     build:
       context: .

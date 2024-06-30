@@ -31,4 +31,4 @@ services:
       eureka-service:
         condition: service_healthy
     environment:
-      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-service:${EUREKA_SERVICE_DOCKER_PORT}/eureka/
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-service:8761/eureka/
