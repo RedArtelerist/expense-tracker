@@ -24,6 +24,10 @@ management:
   info:
     env:
       enabled: true
+
+allowed:
+  hosts: ${ALLOWED_HOSTS}
+
 info:
   app:
     name: "api-gateway"

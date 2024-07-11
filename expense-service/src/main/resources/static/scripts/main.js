@@ -38,6 +38,7 @@ function setMaxSingleTransactionAmount(value) {
 function getMaxSingleTransactionAmount() {
     return maxSingleTransactionAmount;
 }
+
 // ---- Start work with LONG POLLING ----
 
 let fibonacciCounter = fibonacci();
@@ -943,9 +944,3 @@ function drawEmptyCircleForModal() {
     setCircleDimensions(newCircle, 100, 400);
     undefinedSpace.insertAdjacentElement('beforeend', newCircle);
 }
-
-
-
-
-
-
