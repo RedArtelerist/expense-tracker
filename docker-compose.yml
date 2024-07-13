@@ -21,6 +21,8 @@ services:
     extends:
       file: common-config.yml
       service: microservice-base-config
+    volumes:
+      - ./logs/config-server:/app/logs
 
   eureka-service:
     image: redartis/et-eureka-service:v0.0.1
@@ -42,6 +44,8 @@ services:
       service: microservice-config-server-config
     environment:
       SPRING_APPLICATION_NAME: "eureka-service"
+    volumes:
+      - ./logs/eureka-service:/app/logs
 
   expense-tracker-db:
     container_name: expense-tracker-db
@@ -77,9 +81,11 @@ services:
       service: microservice-eureka-config
     environment:
       SPRING_APPLICATION_NAME: "authentication-service"
+    volumes:
+      - /logs/authentication-service:/app/logs
 
   expense-service:
-    image: redartis/expense-service:v0.0.1
+    image: redartis/et-expense-service:v0.0.1
     container_name: expense-service
     build:
       context: .
@@ -102,6 +108,8 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "expense-service"
       SPRING_DATASOURCE_URL: jdbc:postgresql://expense-tracker-db:5432/${EXPENSE_DB}
+    volumes:
+      - ./logs/expense-service:/app/logs
 
   telegram-bot-mongodb:
     container_name: telegram-bot-mongodb
@@ -156,6 +164,8 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "telegram-bot-service"
       SPRING_DATA_MONGODB_URI: "mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@telegram-bot-mongodb:27017/${MONGODB_DATABASE}?authSource=admin"
+    volumes:
+      - ./logs/telegram-bot-service:/app/logs
 
   recognizer-service:
     image: redartis/et-recognizer-service:v0.0.1
@@ -177,6 +187,8 @@ services:
       service: microservice-eureka-config
     environment:
       SPRING_APPLICATION_NAME: "recognizer-service"
+    volumes:
+      - ./logs/recognizer-service:/app/logs
 
   gateway-server:
     image: redartis/et-api-gateway-server:v0.0.1
@@ -196,7 +208,10 @@ services:
     extends:
       file: common-config.yml
       service: microservice-eureka-config
+    volumes:
+      - ./logs/api-gateway:/app/logs
 
 networks:
   expense-network:
     driver: "bridge"
+    name: "expense_network"

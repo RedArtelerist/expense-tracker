@@ -7,10 +7,12 @@ import com.redartis.dto.auth.TelegramAuthRequest;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class AuthService {
     private final JwtService jwtService;
     private final UserService userService;
@@ -20,6 +22,8 @@ public class AuthService {
             throws NoSuchAlgorithmException, InvalidKeyException {
         if (telegramVerificationService.verify(authRequest)) {
             var user = userService.saveTelegramUserData(authRequest);
+
+            log.info("User {} has been successfully authenticated", user.username());
 
             return new AuthResponse(
                     jwtService.generateAccessToken(user),
