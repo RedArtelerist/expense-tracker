@@ -22,7 +22,7 @@ services:
       file: common-config.yml
       service: microservice-base-config
     volumes:
-      - ./logs/config-server:/app/logs
+      - ./logs/config-server.log:/logs/config-server.log
 
   eureka-service:
     image: redartis/et-eureka-service:v0.0.1
@@ -45,21 +45,7 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "eureka-service"
     volumes:
-      - ./logs/eureka-service:/app/logs
-
-  expense-tracker-db:
-    container_name: expense-tracker-db
-    image: postgres
-    restart: unless-stopped
-    ports:
-      - "5436:5432"
-    environment:
-      POSTGRES_DB: ${EXPENSE_DB}
-      POSTGRES_USER: ${EXPENSE_DB_USER}
-      POSTGRES_PASSWORD: ${EXPENSE_DB_PASSWORD}
-    extends:
-      file: common-config.yml
-      service: network-deploy-service
+      - ./logs/eureka-service.log:/logs/eureka-service.log
 
   authentication-service:
     image: redartis/et-authentication-service:v0.0.1
@@ -82,7 +68,21 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "authentication-service"
     volumes:
-      - /logs/authentication-service:/app/logs
+      - ./logs/authentication-service.log:/logs/authentication-service.log
+
+  expense-tracker-db:
+    container_name: expense-tracker-db
+    image: postgres
+    restart: unless-stopped
+    ports:
+      - "5436:5432"
+    environment:
+      POSTGRES_DB: ${EXPENSE_DB}
+      POSTGRES_USER: ${EXPENSE_DB_USER}
+      POSTGRES_PASSWORD: ${EXPENSE_DB_PASSWORD}
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
 
   expense-service:
     image: redartis/et-expense-service:v0.0.1
@@ -109,7 +109,7 @@ services:
       SPRING_APPLICATION_NAME: "expense-service"
       SPRING_DATASOURCE_URL: jdbc:postgresql://expense-tracker-db:5432/${EXPENSE_DB}
     volumes:
-      - ./logs/expense-service:/app/logs
+      - ./logs/expense-service.log:/logs/expense-service.log
 
   telegram-bot-mongodb:
     container_name: telegram-bot-mongodb
@@ -165,7 +165,7 @@ services:
       SPRING_APPLICATION_NAME: "telegram-bot-service"
       SPRING_DATA_MONGODB_URI: "mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@telegram-bot-mongodb:27017/${MONGODB_DATABASE}?authSource=admin"
     volumes:
-      - ./logs/telegram-bot-service:/app/logs
+      - ./logs/telegram-bot-service.log:/logs/telegram-bot-service.log
 
   recognizer-service:
     image: redartis/et-recognizer-service:v0.0.1
@@ -188,7 +188,7 @@ services:
     environment:
       SPRING_APPLICATION_NAME: "recognizer-service"
     volumes:
-      - ./logs/recognizer-service:/app/logs
+      - ./logs/recognizer-service.log:/logs/recognizer-service.log
 
   gateway-server:
     image: redartis/et-api-gateway-server:v0.0.1
@@ -196,6 +196,7 @@ services:
     build:
       context: .
       dockerfile: api-gateway/Dockerfile
+    restart: on-failure
     ports:
       - "8072:8072"
     depends_on:
@@ -209,7 +210,25 @@ services:
       file: common-config.yml
       service: microservice-eureka-config
     volumes:
-      - ./logs/api-gateway:/app/logs
+      - ./logs/api-gateway.log:/logs/api-gateway.log
+
+  frontend:
+    image: redartis/et-frontend:v0.0.1
+    container_name: vue-frontend
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    restart: on-failure
+    ports:
+      - "3000:3000"
+    depends_on:
+      gateway-server:
+        condition: service_completed_successfully
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+    environment:
+      VUE_APP_API_URL: http://gateway-server:8072
 
 networks:
   expense-network:

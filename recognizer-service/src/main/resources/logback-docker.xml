@@ -1,6 +1,4 @@
 <configuration>
-    <property name="LOG_ROOT" value="logs" />
-    <property name="LOG_FILE_NAME" value="application" />
     <springProperty name="SERVICE_NAME" source="spring.application.name" />
 
     <springProperty name="LOGSTASH_HOST" source="logstash.host" />
@@ -12,17 +10,11 @@
         </encoder>
     </appender>
 
-    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
-        <destination>${LOGSTASH_HOST}:${LOGSTASH_PORT}</destination>
-        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <customFields>{"service":"${SERVICE_NAME}"}</customFields>
-        </encoder>
-    </appender>
 
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_ROOT}/${SERVICE_NAME}/${LOG_FILE_NAME}.log</file>
+        <file>logs/${SERVICE_NAME}.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_ROOT}/${SERVICE_NAME}/${LOG_FILE_NAME}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <fileNamePattern>logs/${SERVICE_NAME}-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
             <!-- each archived file's size will be max 100MB -->
             <maxFileSize>100MB</maxFileSize>
             <!-- 7 days to keep -->
@@ -35,9 +27,16 @@
         </encoder>
     </appender>
 
+    <appender name="LOGSTASH" class="net.logstash.logback.appender.LogstashTcpSocketAppender">
+        <destination>${LOGSTASH_HOST}:${LOGSTASH_PORT}</destination>
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"service":"${SERVICE_NAME}"}</customFields>
+        </encoder>
+    </appender>
+
     <root level="info">
-        <appender-ref ref="LOGSTASH"/>
         <appender-ref ref="CONSOLE"/>
         <appender-ref ref="FILE"/>
+        <appender-ref ref="LOGSTASH"/>
     </root>
 </configuration>
