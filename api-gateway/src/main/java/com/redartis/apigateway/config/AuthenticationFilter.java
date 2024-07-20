@@ -2,6 +2,7 @@ package com.redartis.apigateway.config;
 
 import java.util.List;
 import java.util.function.Predicate;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
@@ -15,6 +16,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+@Slf4j
 @RefreshScope
 @Component
 public class AuthenticationFilter implements GatewayFilter {
@@ -44,9 +46,13 @@ public class AuthenticationFilter implements GatewayFilter {
 
             String token = getAuthHeader(request);
             if (token != null && !jwtUtil.validateToken(token)) {
+                log.error("Invalid token");
                 return onError(exchange);
             }
         }
+
+        log.info("Authentication passed");
+
         return chain.filter(exchange);
     }
 

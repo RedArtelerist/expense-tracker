@@ -38,3 +38,10 @@ info:
     name: "telegram-bot-service"
     description: "Telegram Bot Service Application"
     version: "1.0.0"
+
+logging:
+  config: classpath:logback-local.xml
+
+logstash:
+  host: ${LOGSTASH_HOST:localhost}
+  port: ${LOGSTASH_PORT:50000}

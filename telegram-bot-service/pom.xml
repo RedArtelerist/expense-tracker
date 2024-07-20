@@ -81,6 +81,7 @@
 			<version>0.0.1</version>
 		</dependency>
 
+		<!-- Telegram Bot -->
 		<dependency>
 			<groupId>org.telegram</groupId>
 			<artifactId>telegrambots-springboot-longpolling-starter</artifactId>
@@ -90,6 +91,13 @@
 			<groupId>org.telegram</groupId>
 			<artifactId>telegrambots-client</artifactId>
 			<version>${telegram-bot.version}</version>
+		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>net.logstash.logback</groupId>
+			<artifactId>logstash-logback-encoder</artifactId>
+			<version>7.4</version>
 		</dependency>
 	</dependencies>
 

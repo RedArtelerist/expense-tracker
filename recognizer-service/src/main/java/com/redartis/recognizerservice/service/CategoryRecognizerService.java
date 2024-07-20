@@ -59,6 +59,11 @@ public class CategoryRecognizerService {
         TransactionDto transactionDto = TransactionDto.builder()
                 .suggestedCategoryId(suggestedCategoryId)
                 .id(transactionId).build();
+
+        log.info("Transaction with message {} was suggested to category: {}",
+                message, suggestedCategoryId
+        );
+
         expenseTrackerFeign.editTransaction(transactionDto);
     }
 }
