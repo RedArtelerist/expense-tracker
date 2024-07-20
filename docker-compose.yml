@@ -212,23 +212,32 @@ services:
     volumes:
       - ./logs/api-gateway.log:/logs/api-gateway.log
 
-  frontend:
-    image: redartis/et-frontend:v0.0.1
-    container_name: vue-frontend
-    build:
-      context: .
-      dockerfile: frontend/Dockerfile
-    restart: on-failure
+  #frontend:
+  #  image: redartis/et-frontend:v0.0.1
+  #  container_name: vue-frontend
+  #  build:
+  #    context: .
+  #    dockerfile: frontend/Dockerfile
+  #  restart: on-failure
+  #  ports:
+  #    - "3000:3000"
+  #  depends_on:
+  #    gateway-server:
+  #      condition: service_completed_successfully
+  #  extends:
+  #    file: common-config.yml
+  #    service: network-deploy-service
+  #  environment:
+  #    VUE_APP_API_URL: http://gateway-server:8072
+
+  zipkin-server:
+    image: openzipkin/zipkin
+    restart: always
     ports:
-      - "3000:3000"
-    depends_on:
-      gateway-server:
-        condition: service_completed_successfully
+      - "9411:9411"
     extends:
       file: common-config.yml
       service: network-deploy-service
-    environment:
-      VUE_APP_API_URL: http://gateway-server:8072
 
 networks:
   expense-network:

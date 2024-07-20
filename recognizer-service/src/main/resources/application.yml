@@ -33,6 +33,10 @@ management:
   info:
     env:
       enabled: true
+  # Zipkin config
+  tracing:
+    sampling:
+      probability: 1.0
 
 endpoints:
   shutdown:
@@ -46,6 +50,8 @@ info:
 
 logging:
   config: classpath:logback-local.xml
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
 logstash:
   host: ${LOGSTASH_HOST:localhost}

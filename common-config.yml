@@ -1,5 +1,9 @@
 services:
   network-deploy-service:
+    deploy:
+      resources:
+        limits:
+          memory: 700m
     env_file: ./.env
     environment:
       TZ: "Europe/Kyiv"
@@ -9,14 +13,11 @@ services:
   microservice-base-config:
     extends:
       service: network-deploy-service
-    deploy:
-      resources:
-        limits:
-          memory: 700m
     environment:
       LOGGING_CONFIG: "classpath:logback-docker.xml"
       LOGSTASH_HOST: logstash
       LOGSTASH_PORT: 50000
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
 
   microservice-config-server-config:
     extends:
