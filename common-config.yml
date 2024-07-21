@@ -17,7 +17,6 @@ services:
       LOGGING_CONFIG: "classpath:logback-docker.xml"
       LOGSTASH_HOST: logstash
       LOGSTASH_PORT: 50000
-      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
 
   microservice-config-server-config:
     extends:
@@ -39,3 +38,4 @@ services:
         condition: service_healthy
     environment:
       EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka-service:8761/eureka/
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
