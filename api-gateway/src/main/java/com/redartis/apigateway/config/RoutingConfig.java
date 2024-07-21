@@ -21,10 +21,6 @@ public class RoutingConfig {
                         .filters(f -> f.rewritePath("/tracker/(?<segment>.*)", "/${segment}")
                                 .filter(authenticationFilter)
                         ).uri("lb://EXPENSE-SERVICE"))
-                .route(p -> p.path("/telegram/**")
-                        .filters(f -> f.rewritePath("/telegram/(?<segment>.*)", "/${segment}")
-                                .filter(authenticationFilter)
-                        ).uri("lb://TELEGRAM-BOT-SERVICE"))
                 .build();
     }
 }
