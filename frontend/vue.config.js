@@ -4,7 +4,7 @@ module.exports = defineConfig({
     transpileDependencies: true,
 
     devServer: {
-        port: 3000,
+        port: 4000,
         allowedHosts: [process.env.VUE_APP_API_HOST.replace(/^https?:\/\//, '')],
         host: '0.0.0.0',
         client: {

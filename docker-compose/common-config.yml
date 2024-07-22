@@ -13,10 +13,6 @@ services:
   microservice-base-config:
     extends:
       service: network-deploy-service
-    environment:
-      LOGGING_CONFIG: "classpath:logback-docker.xml"
-      LOGSTASH_HOST: logstash
-      LOGSTASH_PORT: 50000
 
   microservice-config-server-config:
     extends:
