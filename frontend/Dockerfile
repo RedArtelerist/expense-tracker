@@ -12,5 +12,5 @@ COPY /frontend .
 # build app for production with minification
 RUN npm run build
 
-EXPOSE 3000
+EXPOSE 4000
 CMD [ "http-server", "dist" ]
