@@ -29,6 +29,9 @@ management:
   info:
     env:
       enabled: true
+  metrics:
+    tags:
+      application: ${spring.application.name}
   # Zipkin config
   tracing:
     sampling:
