@@ -28,7 +28,10 @@ management:
   info:
     env:
       enabled: true
-# Zipkin config
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  # Zipkin config
   tracing:
     sampling:
       probability: 1.0
