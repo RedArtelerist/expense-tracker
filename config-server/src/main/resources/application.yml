@@ -36,3 +36,5 @@ management:
 
 logging:
   config: classpath:logback-local.xml
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"

@@ -27,23 +27,17 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-  # Zipkin config
-  tracing:
-    sampling:
-      probability: 1.0
+
+logging:
+  config: classpath:logback-local.xml
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
 allowed:
   hosts: ${ALLOWED_HOSTS}
-
 
 info:
   app:
     name: "api-gateway"
     description: "API Gateway Server Application"
     version: "1.0.0"
-
-
-logging:
-  config: classpath:logback-local.xml
-  pattern:
-    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"

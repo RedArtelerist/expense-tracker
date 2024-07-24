@@ -36,10 +36,11 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-  # Zipkin config
-  tracing:
-    sampling:
-      probability: 1.0
+
+logging:
+  config: classpath:logback-local.xml
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
 endpoints:
   shutdown:
@@ -50,8 +51,3 @@ info:
     name: "recognizer-service"
     description: "Recognizer Service Application"
     version: "1.0.0"
-
-logging:
-  config: classpath:logback-local.xml
-  pattern:
-    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
