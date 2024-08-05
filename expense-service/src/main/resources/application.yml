@@ -31,10 +31,15 @@ management:
   metrics:
     tags:
       application: ${spring.application.name}
-  # Zipkin config
-  tracing:
-    sampling:
-      probability: 1.0
+
+logging:
+  #config: classpath:logback-local.xml
+  level:
+    com:
+      redartis:
+        expense: INFO
+  pattern:
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
 
 endpoints:
   shutdown:
@@ -45,8 +50,3 @@ info:
     name: "expense-service"
     description: "Expense Service Application"
     version: "1.0.0"
-
-logging:
-  config: classpath:logback-local.xml
-  pattern:
-    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"

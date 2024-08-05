@@ -10,17 +10,18 @@
     </parent>
     <groupId>com.redartis</groupId>
     <artifactId>expense-service</artifactId>
-    <version>0.0.1</version>
+    <version>0.0.2</version>
     <name>expense-service</name>
     <description>Expense Service</description>
 
     <properties>
         <java.version>21</java.version>
-        <spring-cloud.version>2023.0.0</spring-cloud.version>
+        <spring-cloud.version>2023.0.3</spring-cloud.version>
         <maven.checkstyle.plugin.configLocation>checkstyle.xml</maven.checkstyle.plugin.configLocation>
         <jjwt.version>0.12.5</jjwt.version>
         <lombok.mapstruct.binding.version>0.2.0</lombok.mapstruct.binding.version>
         <mapstruct.version>1.5.5.Final</mapstruct.version>
+        <otelVersion>1.33.2</otelVersion>
     </properties>
 
     <dependencyManagement>
@@ -107,7 +108,7 @@
         <dependency>
             <groupId>com.redartis</groupId>
             <artifactId>dto</artifactId>
-            <version>0.0.1</version>
+            <version>0.0.2</version>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -141,23 +142,10 @@
 
         <!-- Distributed tracing -->
         <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-observation</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.micrometer</groupId>
-            <artifactId>micrometer-tracing-bridge-otel</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.opentelemetry</groupId>
-            <artifactId>opentelemetry-exporter-zipkin</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>io.github.openfeign</groupId>
-            <artifactId>feign-micrometer</artifactId>
+            <groupId>io.opentelemetry.javaagent</groupId>
+            <artifactId>opentelemetry-javaagent</artifactId>
+            <version>${otelVersion}</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 
@@ -218,6 +206,22 @@
                     <failsOnError>true</failsOnError>
                     <linkXRef>false</linkXRef>
                     <sourceDirectories>src</sourceDirectories>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>com.google.cloud.tools</groupId>
+                <artifactId>jib-maven-plugin</artifactId>
+                <version>3.4.2</version>
+                <configuration>
+                    <extraDirectories>
+                        <paths>
+                            <path>../dto</path>
+                        </paths>
+                    </extraDirectories>
+                    <to>
+                        <image>redartis/expense-tracker-${project.artifactId}:v${project.version}</image>
+                    </to>
                 </configuration>
             </plugin>
         </plugins>
