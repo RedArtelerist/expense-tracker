@@ -38,9 +38,13 @@ management:
       application: ${spring.application.name}
 
 logging:
-  config: classpath:logback-local.xml
+  #config: classpath:logback-local.xml
+  level:
+    com:
+      redartis:
+        recognizerservice: INFO
   pattern:
-    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+    level: "%5p [${spring.application.name},%X{trace_id},%X{span_id}]"
 
 endpoints:
   shutdown:

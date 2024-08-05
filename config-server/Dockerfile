@@ -1,12 +1,23 @@
+# Stage 1: Build the project
 FROM maven:3.9.6-eclipse-temurin-21-alpine AS build
-RUN mkdir -p /config-server
 WORKDIR /config-server
-COPY /config-server/pom.xml /config-server
-COPY /config-server/src /config-server/src
-RUN mvn -B -f /config-server/pom.xml clean package -DskipTests -Dcheckstyle.skip
 
+# Copy the pom.xml and source code
+COPY config-server/pom.xml .
+COPY config-server/src ./src
+
+# Build the application
+RUN mvn -B clean package -DskipTests -Dcheckstyle.skip
+
+# Stage 2: Create the runtime image
 FROM eclipse-temurin:21-jre-alpine
 RUN apk --no-cache add bash curl
-COPY --from=build /config-server/target/*.jar app.jar
-EXPOSE 8888
-ENTRYPOINT ["java","-jar","app.jar"]
+
+# Copy the built JAR file from the build stage
+COPY --from=build /config-server/target/*.jar /app/app.jar
+
+# Set JAVA_TOOL_OPTIONS to use the OpenTelemetry Java agent
+#ENV JAVA_TOOL_OPTIONS="-javaagent:/app/libs/opentelemetry-javaagent-1.32.0.jar"
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "/app/app.jar"]

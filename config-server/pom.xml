@@ -10,15 +10,14 @@
 	</parent>
 	<groupId>com.redartis</groupId>
 	<artifactId>config-server</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.0.2</version>
 	<name>Config Server</name>
 	<description>config server</description>
 
 	<properties>
 		<java.version>21</java.version>
-		<maven.compiler.source>21</maven.compiler.source>
-		<maven.compiler.target>21</maven.compiler.target>
-		<spring-cloud.version>2023.0.0</spring-cloud.version>
+		<spring-cloud.version>2023.0.3</spring-cloud.version>
+		<otelVersion>1.33.2</otelVersion>
 	</properties>
 
 	<dependencyManagement>
@@ -59,7 +58,7 @@
 		<dependency>
 			<groupId>io.opentelemetry.javaagent</groupId>
 			<artifactId>opentelemetry-javaagent</artifactId>
-			<version>1.33.4</version>
+			<version>${otelVersion}</version>
 			<scope>runtime</scope>
 		</dependency>
 	</dependencies>
@@ -69,6 +68,17 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+
+			<plugin>
+				<groupId>com.google.cloud.tools</groupId>
+				<artifactId>jib-maven-plugin</artifactId>
+				<version>3.4.2</version>
+				<configuration>
+					<to>
+						<image>redartis/expense-tracker-${project.artifactId}:v${project.version}</image>
+					</to>
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>

@@ -91,6 +91,19 @@ services:
       file: common-config.yml
       service: network-deploy-service
 
+  tempo:
+    image: grafana/tempo:latest
+    container_name: tempo
+    command: -config.file /etc/tempo-config.yml
+    ports:
+      - "3110:3100"
+      - "4317:4317"
+    volumes:
+      - ./observability/tempo/tempo.yml:/etc/tempo-config.yml
+    extends:
+      file: common-config.yml
+      service: network-deploy-service
+
   grafana:
     image: grafana/grafana:latest
     environment:
@@ -204,11 +217,8 @@ services:
 
 
   config-server:
-    image: redartis/et-config-server:v0.0.1
+    image: redartis/expense-tracker-config-server:v0.0.2
     container_name: config-server
-    build:
-      context: ..
-      dockerfile: config-server/Dockerfile
     restart: unless-stopped
     healthcheck:
       test: "curl --fail --silent localhost:8888/actuator/health/readiness | grep UP || exit 1"
@@ -220,16 +230,16 @@ services:
       - "8888:8888"
     environment:
       CONFIG_SERVER_GIT_REPOSITORY_URI: ${CONFIG_SERVER_GIT_REPOSITORY_URI}
+      OTEL_SERVICE_NAME: "config-server"
+    labels:
+      logging: "alloy"
     extends:
       file: common-config.yml
       service: microservice-base-config
 
   eureka-service:
-    image: redartis/et-eureka-service:v0.0.1
+    image: redartis/expense-tracker-discovery-service:v0.0.2
     container_name: eureka-service
-    build:
-      context: ..
-      dockerfile: discovery-service/Dockerfile
     restart: unless-stopped
     healthcheck:
       test: "curl --fail --silent localhost:8761/actuator/health/readiness | grep UP || exit 1"
@@ -239,18 +249,18 @@ services:
       start_period: 10s
     ports:
       - "8761:8761"
+    environment:
+      SPRING_APPLICATION_NAME: "eureka-service"
+      OTEL_SERVICE_NAME: "eureka-service"
+    labels:
+      logging: "alloy"
     extends:
       file: common-config.yml
       service: microservice-config-server-config
-    environment:
-      SPRING_APPLICATION_NAME: "eureka-service"
 
   authentication-service:
-    image: redartis/et-authentication-service:v0.0.1
+    image: redartis/expense-tracker-authentication-service:v0.0.2
     container_name: auth-service
-    build:
-      context: ..
-      dockerfile: authentication-service/Dockerfile
     ports:
       - "8400:8400"
     restart: on-failure
@@ -260,11 +270,14 @@ services:
       timeout: 5s
       retries: 20
       start_period: 10s
+    environment:
+      SPRING_APPLICATION_NAME: "authentication-service"
+      OTEL_SERVICE_NAME: "authentication-service"
+    labels:
+      logging: "alloy"
     extends:
       file: common-config.yml
       service: microservice-eureka-config
-    environment:
-      SPRING_APPLICATION_NAME: "authentication-service"
 
   expense-tracker-db:
     container_name: expense-tracker-db
@@ -281,11 +294,8 @@ services:
       service: network-deploy-service
 
   expense-service:
-    image: redartis/et-expense-service:v0.0.1
+    image: redartis/expense-tracker-expense-service:v0.0.2
     container_name: expense-service
-    build:
-      context: ..
-      dockerfile: expense-service/Dockerfile
     ports:
       - "8100:8100"
     restart: on-failure
@@ -298,12 +308,15 @@ services:
     depends_on:
       expense-tracker-db:
         condition: service_started
-    extends:
-      file: common-config.yml
-      service: microservice-eureka-config
     environment:
       SPRING_APPLICATION_NAME: "expense-service"
       SPRING_DATASOURCE_URL: jdbc:postgresql://expense-tracker-db:5432/${EXPENSE_DB}
+      OTEL_SERVICE_NAME: "expense-service"
+    labels:
+      logging: "alloy"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
 
   telegram-bot-mongodb:
     container_name: telegram-bot-mongodb
@@ -335,11 +348,8 @@ services:
       service: network-deploy-service
 
   telegram-bot-service:
-    image: redartis/et-telegram-bot-service:v0.0.1
+    image: redartis/expense-tracker-telegram-bot-service:v0.0.2
     container_name: telegram-bot-service
-    build:
-      context: ..
-      dockerfile: telegram-bot-service/Dockerfile
     restart: on-failure
     healthcheck:
       test: "curl --fail --silent localhost:8200/actuator/health/readiness | grep UP || exit 1"
@@ -352,19 +362,19 @@ services:
         condition: service_started
     ports:
       - "8200:8200"
-    extends:
-      file: common-config.yml
-      service: microservice-eureka-config
     environment:
       SPRING_APPLICATION_NAME: "telegram-bot-service"
       SPRING_DATA_MONGODB_URI: "mongodb://${MONGODB_USER}:${MONGODB_PASSWORD}@telegram-bot-mongodb:27017/${MONGODB_DATABASE}?authSource=admin"
+      OTEL_SERVICE_NAME: "telegram-bot-service"
+    labels:
+      logging: "alloy"
+    extends:
+      file: common-config.yml
+      service: microservice-eureka-config
 
   recognizer-service:
-    image: redartis/et-recognizer-service:v0.0.1
+    image: redartis/expense-tracker-recognizer-service:v0.0.2
     container_name: recognizer-service
-    build:
-      context: ..
-      dockerfile: recognizer-service/Dockerfile
     restart: on-failure
     healthcheck:
       test: "curl --fail --silent localhost:8300/actuator/health/readiness | grep UP || exit 1"
@@ -374,14 +384,17 @@ services:
       start_period: 10s
     ports:
       - "8300:8300"
+    environment:
+      SPRING_APPLICATION_NAME: "recognizer-service"
+      OTEL_SERVICE_NAME: "recognizer-service"
+    labels:
+      logging: "alloy"
     extends:
       file: common-config.yml
       service: microservice-eureka-config
-    environment:
-      SPRING_APPLICATION_NAME: "recognizer-service"
 
   gateway-server:
-    image: redartis/et-api-gateway-server:v0.0.1
+    image: redartis/expense-tracker-api-gateway:v0.0.2
     container_name: api-gateway-server
     build:
       context: ..
@@ -396,6 +409,9 @@ services:
         condition: service_healthy
     environment:
       SPRING_APPLICATION_NAME: "api-gateway"
+      OTEL_SERVICE_NAME: "api-gateway"
+    labels:
+      logging: "alloy"
     extends:
       file: common-config.yml
       service: microservice-eureka-config
@@ -417,15 +433,6 @@ services:
   #    service: network-deploy-service
   #  environment:
   #    VUE_APP_API_URL: http://gateway-server:8072
-
-  zipkin-server:
-    image: openzipkin/zipkin
-    restart: always
-    ports:
-      - "9411:9411"
-    extends:
-      file: common-config.yml
-      service: network-deploy-service
 
 networks:
   expense-network:

@@ -1,10 +1,5 @@
 services:
   network-deploy-service:
-    deploy:
-      resources:
-        limits:
-          memory: 700m
-    env_file: ./.env
     environment:
       TZ: "Europe/Kyiv"
     networks:
@@ -13,6 +8,15 @@ services:
   microservice-base-config:
     extends:
       service: network-deploy-service
+    deploy:
+      resources:
+        limits:
+          memory: 700m
+    env_file: ./.env
+    environment:
+      JAVA_TOOL_OPTIONS: "-javaagent:/app/libs/opentelemetry-javaagent-1.33.2.jar"
+      OTEL_EXPORTER_OTLP_ENDPOINT: http://tempo:4317
+      OTEL_METRICS_EXPORTER: none
 
   microservice-config-server-config:
     extends:
