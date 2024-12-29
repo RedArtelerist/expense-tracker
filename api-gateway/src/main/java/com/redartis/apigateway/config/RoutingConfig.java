@@ -19,8 +19,8 @@ public class RoutingConfig {
                         .uri("lb://AUTHENTICATION-SERVICE"))
                 .route(p -> p.path("/tracker/**")
                         .filters(f -> f.rewritePath("/tracker/(?<segment>.*)", "/${segment}")
-                                .filter(authenticationFilter)
-                        ).uri("lb://EXPENSE-SERVICE"))
+                                .filter(authenticationFilter))
+                        .uri("lb://EXPENSE-SERVICE"))
                 .build();
     }
 }

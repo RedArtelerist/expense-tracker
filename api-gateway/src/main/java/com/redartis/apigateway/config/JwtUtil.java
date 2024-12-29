@@ -37,7 +37,7 @@ public class JwtUtil {
         } catch (SignatureException ex) {
             log.error("Invalid signature", ex);
         } catch (Exception ex) {
-            log.error("invalid token", ex);
+            log.error("Invalid token", ex);
         }
         return false;
     }
