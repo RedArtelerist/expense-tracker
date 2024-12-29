@@ -31,8 +31,10 @@ public class AccountService {
     private final UserMapper userMapper;
 
     public Account getAccountByChatId(Long chatId) {
-        return accountRepository.findByChatId(chatId).orElseThrow(
-                () -> new AccountNotFoundException("Can't find account by chatId=" + chatId));
+        return accountRepository.findByChatId(chatId)
+                .orElseThrow(() -> new AccountNotFoundException(
+                        String.format("Can't find account by chatId=%d",  chatId)
+                ));
     }
 
     public Account getAccountByChatIdWithUsers(Long chatId) {
