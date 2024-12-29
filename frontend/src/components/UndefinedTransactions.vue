@@ -22,6 +22,7 @@
 
 <script>
 import axios from '../axios-config';
+import WebSocketService from '../service/ws-service';
 
 export default {
   name: 'Transactions',
@@ -43,6 +44,7 @@ export default {
     this.getUndefinedTransactionsData();
     this.intervalId = setInterval(this.checkUserIsActive, this.timeout / 2);
     this.idleLongPolling();
+    //this.connectToWebSocket();
   },
   beforeUnmount() { // For Vue 3
     this.clearTimers();
@@ -132,6 +134,7 @@ export default {
         this.$emit('highlight-category', suggestedCategoryId);
       }
     },
+
     handleDragEnd(e) {
       e.target.style.opacity = 1.0;
 
@@ -164,7 +167,26 @@ export default {
         clearInterval(this.intervalId);
       }
       this.getNewUndefinedTransactions = false;
-    }
+    },
+
+    // ws
+    /*connectToWebSocket() {
+      WebSocketService.connect(
+          this.onConnected,
+          this.onError
+      );
+    },
+    onConnected() {
+      // Subscribe to user-specific destination for transactions
+      WebSocketService.subscribe('/user/topic/transactions', this.onTransactionReceived);
+    },
+    onTransactionReceived(transaction) {
+      console.log('Received transaction:', transaction);
+      this.transactions.push(transaction);
+    },
+    onError(error) {
+      console.error('WebSocket error:', error);
+    }*/
   }
 }
 </script>
